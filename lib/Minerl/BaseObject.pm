@@ -9,6 +9,7 @@ sub new {
     my $self = bless {}, ref($class) || $class;
 
     $self->_init(%args);
+    $self->{"DEBUG"} = 1;
 
     return $self;
 }
