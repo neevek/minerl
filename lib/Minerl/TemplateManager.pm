@@ -11,6 +11,7 @@ use Minerl::Util;
 
 use File::Basename;
 use HTML::Template;
+use Minerl::Template;
 
 use constant {
     PRE_READ => 1,
@@ -35,67 +36,104 @@ sub _initTemplates {
     -d $templateDir or die "$templateDir: $!";
     my @files = glob($templateDir . "/*" . $templateSuffix);
 
-    my %tmplPropsHashes;
+    my $tmplHashes = $self->{"templates"} = {};
 
     foreach my $filename (@files) {
         print "found template file: $filename\n" if $self->{"DEBUG"};
 
         # basename without suffix
         my ($name) = basename($filename) =~ /([^.]+)/;
-        $tmplPropsHashes{$name} = Minerl::Util::parseFile($filename);
+        $tmplHashes->{$name} = new Minerl::Template( filename => $filename, name => $name );
     }
-
-    $self->{"templates"} = {};
-
-    foreach my $tmplName (keys %tmplPropsHashes) {
-        next if $self->{"templates"}->{$tmplName};
-
-        $self->{"templates"}->{$tmplName} = $self->_buildTemplates(\%tmplPropsHashes, $tmplName);
-    }
-
-    foreach my $tmplName (keys %tmplPropsHashes) {
-        say "========== $tmplName ==========";
-        my $tmplProps = $tmplPropsHashes{$tmplName};
-        $self->{"templates"}->{$tmplName}->param(content => "HELLO WORLD!!!");
-        say $self->{"templates"}->{$tmplName}->output;
+    
+    while (my ($tmplName, $tmpl) = each %$tmplHashes) {
+        next if $tmpl->built();
+        $self->_buildTemplate($tmpl);
     }
 }
 
-sub _buildTemplates {
-    my ($self, $tmplPropsHashes, $tmplName) = @_;
-    my $tmplProps = $tmplPropsHashes->{$tmplName};
+sub _buildTemplate {
+    my ($self, $tmpl) = @_;
+    my $tmplHashes = $self->{"templates"};
 
-    my $headers = $tmplProps->{"headers"};
+    my $baseTmpl;
+    my $baseTmplName = $tmpl->field("layout");
+    if ($baseTmplName) {
+        $baseTmpl = $tmplHashes->{$baseTmplName};
+        die "Template not found: $baseTmpl" if !$baseTmpl;
 
-    my $baseTmpl; 
-    my $baseTmplName = $headers && $headers->{"base"};
-    if ($baseTmplName && !$self->{"templates"}->{$baseTmplName}) {
-
-        die "Layout file not found: $baseTmplName - $!" if !$tmplPropsHashes->{$baseTmplName};
-        $baseTmpl = $self->_buildTemplates($tmplPropsHashes, $baseTmplName);     
-
-        $self->{"templates"}->{$baseTmplName} = $baseTmpl;
+        $self->_buildTemplate($baseTmpl) if !$baseTmpl->built;
     }
 
-    if ($baseTmpl) {
-        $baseTmpl->param(content => $tmplProps->{"content"}); 
-        $tmplProps->{"content"} = $baseTmpl->output();
-        $baseTmpl->clear_params();
-    }
-
-    return HTML::Template->new_scalar_ref(\$tmplProps->{"content"}, die_on_bad_params => 0);
+    $tmpl->build($baseTmpl);
 }
 
-sub _applyTemplate {
+sub applyTemplate {
     my ($self, $tmplName, $options) = @_;
 
-    die "Template not found: $tmplName - $!" if !$self->{"templates"}->{$tmplName};
-    
-    my $tmpl = $self->{"templates"}->{$tmplName}; 
-    $tmpl->clear_param();
-    $tmpl->param($options);
+    my $tmpl = $self->{"templates"}->{$tmplName};
+    die "Template not found: $tmplName" if !$tmpl;
+    say "===========>>>>>>>>>" . $tmpl;
 
-    return $tmpl->output(); 
+    return $tmpl->apply($options);
 }
+
+
+#sub _initTemplates {
+    #my ($self, $templateDir, $templateSuffix) = @_;
+
+    #-d $templateDir or die "$templateDir: $!";
+    #my @files = glob($templateDir . "/*" . $templateSuffix);
+
+    #my %tmplPropsHashes;
+
+    #foreach my $filename (@files) {
+        #print "found template file: $filename\n" if $self->{"DEBUG"};
+
+        ## basename without suffix
+        #my ($name) = basename($filename) =~ /([^.]+)/;
+        #$tmplPropsHashes{$name} = Minerl::Util::parseFile($filename);
+    #}
+
+    #$self->{"templates"} = {};
+
+    #foreach my $tmplName (keys %tmplPropsHashes) {
+        #next if $self->{"templates"}->{$tmplName};
+
+        #$self->{"templates"}->{$tmplName} = $self->_buildTemplates(\%tmplPropsHashes, $tmplName);
+    #}
+
+    #foreach my $tmplName (keys %tmplPropsHashes) {
+        #say "========== $tmplName ==========";
+        #my $tmplProps = $tmplPropsHashes{$tmplName};
+        #$self->{"templates"}->{$tmplName}->param(content => "HELLO WORLD!!!");
+        #say $self->{"templates"}->{$tmplName}->output;
+    #}
+#}
+
+#sub _buildTemplates {
+    #my ($self, $tmplPropsHashes, $tmplName) = @_;
+    #my $tmplProps = $tmplPropsHashes->{$tmplName};
+
+    #my $headers = $tmplProps->{"headers"};
+
+    #my $baseTmpl; 
+    #my $baseTmplName = $headers && $headers->{"layout"};
+    #if ($baseTmplName && !$self->{"templates"}->{$baseTmplName}) {
+
+        #die "Layout file not found: $baseTmplName - $!" if !$tmplPropsHashes->{$baseTmplName};
+        #$baseTmpl = $self->_buildTemplates($tmplPropsHashes, $baseTmplName);     
+
+        #$self->{"templates"}->{$baseTmplName} = $baseTmpl;
+    #}
+
+    #if ($baseTmpl) {
+        #$baseTmpl->param(content => $tmplProps->{"content"}); 
+        #$tmplProps->{"content"} = $baseTmpl->output();
+        #$baseTmpl->clear_params();
+    #}
+
+    #return HTML::Template->new_scalar_ref(\$tmplProps->{"content"}, die_on_bad_params => 0);
+#}
 
 1;

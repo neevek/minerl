@@ -18,9 +18,9 @@ use constant {
 # this subroutine parses file that is composed of a 
 # header section and content section
 sub parseFile {
-    my ($filename) = @_;
+    my ($filename, $hash) = @_;
 
-    my %hash;
+    $hash = $hash || {};
     my $content = "";
     my $state = PRE_READ;
     open FILE, "< $filename"; 
@@ -45,7 +45,7 @@ sub parseFile {
                 $line =~ s/^[ \t]+//g;
                 $line =~ s/[ \t\n]+$//g;
                 my ($key, $value) = split "[ \t]*:[ \t]*", $line;
-                $hash{"headers"}->{$key} = $value;
+                $hash->{"fields"}->{$key} = $value;
 
                 #print "HEADER: $key => $value\n";  
             }
@@ -55,13 +55,13 @@ sub parseFile {
         } 
     } 
 
-    $hash{"content"} = $content;
+    $hash->{"fields"}->{"content"} = $content;
 
     die "$filename: Header section is not closed." if $state == READ_HEADER;
     close(FILE);
 
     #print "========CONTENT======$content=====\n" if $content;
-    return \%hash;
+    return $hash;
 }
 
 1;
