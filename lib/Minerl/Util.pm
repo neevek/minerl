@@ -46,8 +46,6 @@ sub parseFile {
                 $line =~ s/[ \t\n]+$//g;
                 my ($key, $value) = split "[ \t]*:[ \t]*", $line;
                 $hash->{"headers"}->{$key} = $value;
-
-                #print "HEADER: $key => $value\n";  
             }
             when (READ_CONTENT) {
                 $content .= $line; 
@@ -60,7 +58,6 @@ sub parseFile {
     die "$filename: Header section is not closed." if $state == READ_HEADER;
     close(FILE);
 
-    #print "========CONTENT======$content=====\n" if $content;
     return $hash;
 }
 

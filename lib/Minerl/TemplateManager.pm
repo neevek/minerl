@@ -10,8 +10,8 @@ our @ISA = qw(Minerl::BaseObject);
 use Minerl::Util;
 
 use File::Basename;
-use HTML::Template;
 use Minerl::Template;
+
 
 use constant {
     PRE_READ => 1,
@@ -39,7 +39,7 @@ sub _initTemplates {
     my $tmplHashes = $self->{"templates"} = {};
 
     foreach my $filename (@files) {
-        print "found template file: $filename\n" if $self->{"DEBUG"};
+        #print "found template file: $filename\n" if $self->{"DEBUG"};
 
         # basename without suffix
         my ($name) = basename($filename) =~ /([^.]+)/;
@@ -52,23 +52,14 @@ sub _initTemplates {
     }
 }
 
-#sub _buildTemplate {
-    #my ($self, $tmpl) = @_;
-    #my $tmplHashes = $self->{"templates"};
-
-    #my $baseTmpl;
-    #my $baseTmplName = $tmpl->field("layout");
-    #if ($baseTmplName) {
-        #$baseTmpl = $tmplHashes->{$baseTmplName};
-        #die "Template not found: $baseTmpl" if !$baseTmpl;
-
-        #$self->_buildTemplate($baseTmpl) if !$baseTmpl->built;
-    #}
-
-    #$tmpl->build($baseTmpl);
-#}
-
 sub applyTemplate {
+    my ($self, $tmplName, $content, $options) = @_;
+    $content = $self->_applyTemplateRecursively($tmplName, $content, $options);
+
+    return $self->_prettyPrintAvailable ? $self->_prettyPrint($content) : $content;
+}
+
+sub _applyTemplateRecursively {
     my ($self, $tmplName, $content, $options) = @_;
 
     my $tmpl = $self->{"templates"}->{$tmplName};
@@ -77,67 +68,39 @@ sub applyTemplate {
     $content = $tmpl->apply($content, $options);
     my $baseTmplName = $tmpl->header("layout");
     if ($baseTmplName) {
-        return $self->applyTemplate($baseTmplName, $content, $options);
+        return $self->_applyTemplateRecursively($baseTmplName, $content, $options);
     } 
     return $content;
 }
 
+sub _prettyPrintAvailable {
+    my ($self) = @_;
+    return 0;
 
-#sub _initTemplates {
-    #my ($self, $templateDir, $templateSuffix) = @_;
+    my $useStr = "
+        use HTML::HTML5::Parser qw();
+        use HTML::HTML5::Writer qw();
+        use XML::LibXML::PrettyPrint qw();
+    ";
 
-    #-d $templateDir or die "$templateDir: $!";
-    #my @files = glob($templateDir . "/*" . $templateSuffix);
+    eval($useStr);
 
-    #my %tmplPropsHashes;
+    return $@ ? undef : 1;
+}
 
-    #foreach my $filename (@files) {
-        #print "found template file: $filename\n" if $self->{"DEBUG"};
+sub _prettyPrint {
+    my ($self, $content) = @_;
 
-        ## basename without suffix
-        #my ($name) = basename($filename) =~ /([^.]+)/;
-        #$tmplPropsHashes{$name} = Minerl::Util::parseFile($filename);
-    #}
-
-    #$self->{"templates"} = {};
-
-    #foreach my $tmplName (keys %tmplPropsHashes) {
-        #next if $self->{"templates"}->{$tmplName};
-
-        #$self->{"templates"}->{$tmplName} = $self->_buildTemplates(\%tmplPropsHashes, $tmplName);
-    #}
-
-    #foreach my $tmplName (keys %tmplPropsHashes) {
-        #say "========== $tmplName ==========";
-        #my $tmplProps = $tmplPropsHashes{$tmplName};
-        #$self->{"templates"}->{$tmplName}->param(content => "HELLO WORLD!!!");
-        #say $self->{"templates"}->{$tmplName}->output;
-    #}
-#}
-
-#sub _buildTemplates {
-    #my ($self, $tmplPropsHashes, $tmplName) = @_;
-    #my $tmplProps = $tmplPropsHashes->{$tmplName};
-
-    #my $headers = $tmplProps->{"headers"};
-
-    #my $baseTmpl; 
-    #my $baseTmplName = $headers && $headers->{"layout"};
-    #if ($baseTmplName && !$self->{"templates"}->{$baseTmplName}) {
-
-        #die "Layout file not found: $baseTmplName - $!" if !$tmplPropsHashes->{$baseTmplName};
-        #$baseTmpl = $self->_buildTemplates($tmplPropsHashes, $baseTmplName);     
-
-        #$self->{"templates"}->{$baseTmplName} = $baseTmpl;
-    #}
-
-    #if ($baseTmpl) {
-        #$baseTmpl->param(content => $tmplProps->{"content"}); 
-        #$tmplProps->{"content"} = $baseTmpl->output();
-        #$baseTmpl->clear_params();
-    #}
-
-    #return HTML::Template->new_scalar_ref(\$tmplProps->{"content"}, die_on_bad_params => 0);
-#}
+    return HTML::HTML5::Writer->new(
+        start_tags => 'force',
+        end_tags => 'force',
+    )->document(
+        XML::LibXML::PrettyPrint->new_for_html(
+            indent_string => "\t"
+        )->pretty_print(
+            HTML::HTML5::Parser->new->parse_string( $content )
+        )
+    );
+}
 
 1;

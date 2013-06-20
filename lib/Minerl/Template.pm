@@ -5,6 +5,7 @@ use 5.10.0;
 package Minerl::Template;
 
 use Minerl::Page;
+use HTML::Template;
 our @ISA = qw(Minerl::Page);
 
 sub build {
@@ -24,11 +25,6 @@ sub apply {
     $tmpl->clear_params();
     $tmpl->param($options);
     $tmpl->param( content => $content );
-
-    #say ">>>>>>>>>>>>>>>>>>>";
-    #use Data::Dumper;
-    #say Data::Dumper->Dumper([$options]);
-    #say "22>>>>>>>>>>>>>>>>>>>";
 
     return $tmpl->output(); 
 }
