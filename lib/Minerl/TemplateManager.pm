@@ -12,13 +12,6 @@ use Minerl::Util;
 use File::Basename;
 use Minerl::Template;
 
-
-use constant {
-    PRE_READ => 1,
-    READ_HEADER => 2,
-    READ_CONTENT => 3 
-};
-
 sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);

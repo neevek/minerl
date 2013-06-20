@@ -21,19 +21,27 @@ use 5.10.0;
 #say $p->get("name");
     
 use Minerl::TemplateManager;
+use Minerl::PageManager;
 use Minerl::Page;
 use Data::Dumper;
 
 #my $tm = new Minerl::TemplateManager(template_dir => ".", template_suffix => ".html");
 my $tm = new Minerl::TemplateManager(template_suffix => ".html");
+my $pm = new Minerl::PageManager();
 
-my $p = new Minerl::Page( filename => "posts/index.md" );
+my $pages = $pm->pages();
+foreach my $page (@$pages) {
+    #say "=====page: " . $page->{"name"} . " ====";
+    say $tm->applyTemplate($page->header("layout"), $page->content, $page->headers);
+}
+
 
 #say Data::Dumper->Dump([$p->headers]);
 
 #say $p->headers;
 
-say $tm->applyTemplate($p->header("layout"), $p->content, $p->headers);
+#my $p = new Minerl::Page( filename => "pages/index.md" );
+#say $tm->applyTemplate($p->header("layout"), $p->content, $p->headers);
 
 #my $p = new Minerl::Page( filename => "templates/default.html" );
 ##say $p->content;

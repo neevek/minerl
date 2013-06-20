@@ -40,4 +40,16 @@ sub content {
     return $self->{"content"};
 }
 
+sub applyFormatter {
+    my ($self, $formatter) = @_;
+    $self->{"content"} = $formatter->format( $self->{"content"}, $self->headers() );
+}
+
+sub formats {
+    my ($self) = @_;
+    my $formatHeader = $self->header("format");
+
+    return $formatHeader ? split "[ \t]*,[ \t]*", $formatHeader : undef;
+}
+
 1;
