@@ -48,34 +48,38 @@ sub _initTemplates {
     
     while (my ($tmplName, $tmpl) = each %$tmplHashes) {
         next if $tmpl->built();
-        $self->_buildTemplate($tmpl);
+        $tmpl->build();
     }
 }
 
-sub _buildTemplate {
-    my ($self, $tmpl) = @_;
-    my $tmplHashes = $self->{"templates"};
+#sub _buildTemplate {
+    #my ($self, $tmpl) = @_;
+    #my $tmplHashes = $self->{"templates"};
 
-    my $baseTmpl;
-    my $baseTmplName = $tmpl->field("layout");
-    if ($baseTmplName) {
-        $baseTmpl = $tmplHashes->{$baseTmplName};
-        die "Template not found: $baseTmpl" if !$baseTmpl;
+    #my $baseTmpl;
+    #my $baseTmplName = $tmpl->field("layout");
+    #if ($baseTmplName) {
+        #$baseTmpl = $tmplHashes->{$baseTmplName};
+        #die "Template not found: $baseTmpl" if !$baseTmpl;
 
-        $self->_buildTemplate($baseTmpl) if !$baseTmpl->built;
-    }
+        #$self->_buildTemplate($baseTmpl) if !$baseTmpl->built;
+    #}
 
-    $tmpl->build($baseTmpl);
-}
+    #$tmpl->build($baseTmpl);
+#}
 
 sub applyTemplate {
-    my ($self, $tmplName, $options) = @_;
+    my ($self, $tmplName, $content, $options) = @_;
 
     my $tmpl = $self->{"templates"}->{$tmplName};
     die "Template not found: $tmplName" if !$tmpl;
-    say "===========>>>>>>>>>" . $tmpl;
 
-    return $tmpl->apply($options);
+    $content = $tmpl->apply($content, $options);
+    my $baseTmplName = $tmpl->header("layout");
+    if ($baseTmplName) {
+        return $self->applyTemplate($baseTmplName, $content, $options);
+    } 
+    return $content;
 }
 
 

@@ -25,19 +25,19 @@ sub new {
     return $self;
 }
 
-sub field {
+sub header {
     my ($self, $key) = @_;
-    return $self->{"fields"}->{$key};
+    return $self->{"headers"}->{$key};
 }
 
-sub fields {
+sub headers {
     my ($self) = @_;
-    return $self->{"fields"};
+    return $self->{"headers"};
 }
 
 sub content {
     my ($self) = @_;
-    return $self->{"fields"}->{"content"};
+    return $self->{"content"};
 }
 
 1;

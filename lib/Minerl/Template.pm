@@ -8,16 +8,12 @@ use Minerl::Page;
 our @ISA = qw(Minerl::Page);
 
 sub build {
-    my ($self, $baseTmpl) = @_; 
-    if ($baseTmpl) {
-        $self->{"fields"}->{"content"} = $baseTmpl->apply( { content => $self->content } ); 
-    }
-
-    return $self->{"template"} = HTML::Template->new_scalar_ref(\$self->content, die_on_bad_params => 0);
+    my ($self) = @_; 
+    $self->{"template"} = HTML::Template->new_scalar_ref(\$self->content, die_on_bad_params => 0);
 }
 
 sub apply {
-    my ($self, $options) = @_; 
+    my ($self, $content, $options) = @_; 
 
     my $tmpl = $self->{"template"};   
 
@@ -27,6 +23,7 @@ sub apply {
 
     $tmpl->clear_params();
     $tmpl->param($options);
+    $tmpl->param( content => $content );
 
     #say ">>>>>>>>>>>>>>>>>>>";
     #use Data::Dumper;

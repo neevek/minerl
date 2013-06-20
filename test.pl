@@ -29,18 +29,18 @@ my $tm = new Minerl::TemplateManager(template_suffix => ".html");
 
 my $p = new Minerl::Page( filename => "posts/index.md" );
 
-#say Data::Dumper->Dump([$p->fields]);
+#say Data::Dumper->Dump([$p->headers]);
 
-#say $p->fields;
+#say $p->headers;
 
-say $tm->applyTemplate($p->field("layout"), $p->fields);
+say $tm->applyTemplate($p->header("layout"), $p->content, $p->headers);
 
 #my $p = new Minerl::Page( filename => "templates/default.html" );
 ##say $p->content;
 
-#say $p->field("footer");
+#say $p->header("footer");
 
-#my $h = $p->fields;
+#my $h = $p->headers;
 #while (my ($k, $v) = each %$h) {
     #say "$k => $v";
 #}
