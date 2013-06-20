@@ -18,6 +18,7 @@ sub new {
 
     my $pageDir = $self->{"page_dir"} || "./pages";
     my $pageSuffixRegex = $self->{"page_suffix_regex"} || "\\.(?:md|markdown)\$";
+
     $self->_initPages($pageDir, $pageSuffixRegex);
    
     return $self;
@@ -37,7 +38,11 @@ sub _initPages {
 
         # basename without suffix
         my ($name) = basename($filename) =~ /([^.]+)/;
-        push @$pageArr , new Minerl::Page( filename => "$pageDir/$filename", name => $name );
+        my $page = new Minerl::Page( filename => "$pageDir/$filename", name => $name );
+
+        die "$filename: layout is not specified." if !$page->header("layout");
+
+        push @$pageArr, $page;
     }
     closedir($openedDir);
 
@@ -48,8 +53,8 @@ sub _formatPages {
     my ($self, $pageArr) = @_;
 
     foreach my $page (@$pageArr) {
-        my @formats = $page->formats();
-        map { $page->applyFormatter($self->_obtainFormatter($_)) } @formats if @formats;
+        my $formats = $page->formats();
+        map { $page->applyFormatter($self->_obtainFormatter($_)) } @$formats if $formats;
     }
 }
 

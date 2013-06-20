@@ -86,7 +86,7 @@ sub _prettyPrint {
 
     return HTML::HTML5::Writer->new(
         start_tags => 'force',
-        end_tags => 'force',
+        end_tags => 'force', 
     )->document(
         XML::LibXML::PrettyPrint->new_for_html(
             indent_string => "\t"

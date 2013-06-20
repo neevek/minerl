@@ -49,7 +49,24 @@ sub formats {
     my ($self) = @_;
     my $formatHeader = $self->header("format");
 
-    return $formatHeader ? split "[ \t]*,[ \t]*", $formatHeader : undef;
+    return $formatHeader ? [split "[ \t]*,[ \t]*", $formatHeader] : undef;
+}
+
+sub outputFilename {
+    my ($self) = @_;
+
+    my $slug = $self->header("slug");
+    return $slug if $slug;
+
+    $slug = lc $self->header("title");
+    die "Post does not contain a title header: " . $self->{"filename"} if !$slug;
+
+    $slug =~ s/[^a-z]/ /g;
+    $slug =~ s/^[ \t]+//g;         # trim left
+    $slug =~ s/[ \t]+$//g;         # trim right
+    $slug =~ s/[ \t]+/-/g;         # replace all whitespaces with -
+
+    return $slug . ".html";
 }
 
 1;

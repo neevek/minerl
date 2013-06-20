@@ -17,6 +17,8 @@ sub new {
         $instance->{"available"} = !$@;
     }
 
+    warn "Warning: Text::Markdown is not installed, Markdown text will not be parsed." if !$instance->{"available"};
+
     return $instance;
 }
 

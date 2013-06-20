@@ -27,7 +27,7 @@ use Data::Dumper;
 
 #my $tm = new Minerl::TemplateManager(template_dir => ".", template_suffix => ".html");
 my $tm = new Minerl::TemplateManager(template_suffix => ".html");
-my $pm = new Minerl::PageManager();
+my $pm = new Minerl::PageManager( page_dir => "./pages", page_suffix_regex => "\\.(?:md|markdown)\$");
 
 my $pages = $pm->pages();
 foreach my $page (@$pages) {
