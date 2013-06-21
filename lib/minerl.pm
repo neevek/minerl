@@ -9,10 +9,11 @@ use Minerl::PageManager;
 
 use File::Path qw(make_path);
 use File::Find qw(find);
+use File::Copy qw(copy); 
 
 sub generate {
     my $tm = new Minerl::TemplateManager(template_suffix => ".html");
-    my $pm = new Minerl::PageManager( page_dir => "./pages", page_suffix_regex => "\\.(?:md|markdown)\$"); 
+    my $pm = new Minerl::PageManager( page_dir => "./pages", page_suffix_regex => "\\.(?:md|markdown|html)\$"); 
 
     my $outputDir = "out/";
     make_path($outputDir, { mode => 0755 });
@@ -39,23 +40,18 @@ sub _copyRawResources {
     my $rawDir = "raw/";
     return if !-d $rawDir;
 
-    find( { wanted => \&process, no_chdir => 1 }, ($rawDir) ); 
-    sub process {
+    find( { wanted => sub {
         if ( -d $_ ) {
-            s|$rawDir||;
+            s|$rawDir||; # strip the first directory
             make_path ("$outputDir/" . $_, { mode => 0755 });
         } elsif ( -f $_ ) {
-            #my $srcFile = $_;
-            #s|$rawDir||;
-
-            #open my $srcFh, "<", $srcFile die "Failed to open '$srcFile' - $!";
-
-            #open my $dstFh, ">:utf8", "$outputDir/" . $_ die "Failed to write to '$_' - $!";
-            #binmode($dstFh, ":utf8");
-            #print $dstFh $html;
-            #close $dstFh;
+            my $srcFile = $_;
+            s|$rawDir||;
+            my ($destFile) = "$outputDir/$_";
+            copy ($srcFile, $destFile);
         }
-    }
+    }, no_chdir => 1 }, ($rawDir) ); 
+
 }
 
 generate();

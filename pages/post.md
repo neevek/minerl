@@ -4,6 +4,7 @@ layout: default
 footer: All rights reserved @ neevek
 format: perl, markdown
 slug: short-name.html
+type: post
 ---
 
 ## {{ $title }}
