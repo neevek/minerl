@@ -18,6 +18,7 @@ sub new {
 
     my $templateDir = $self->{"template_dir"};
     my $templateSuffix = $self->{"template_suffix"};
+
     $self->_initTemplates($templateDir, $templateSuffix);
    
     return $self;

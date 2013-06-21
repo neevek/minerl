@@ -41,8 +41,13 @@ sub parsePageFile {
 
         given ($state) {
             when (PAGE_READ_HEADER)  {
-                # strip leading and trailing white spaces
+                # strip leading white spaces
                 $line =~ s/^[ \t]+//g;
+
+                # skip comments
+                next if $line =~ /^#/;
+
+                # strip trailing white spaces
                 $line =~ s/[ \t\n]+$//g;
                 my ($key, $value) = split "[ \t]*:[ \t]*", $line;
                 $hash->{"headers"}->{$key} = $value;

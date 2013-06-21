@@ -29,8 +29,6 @@ sub apply {
     } elsif (ref($options) eq "ARRAY") {
         foreach my $option (@$options) {
             if (ref($option) eq "HASH") {
-                #say %$option;
-                #say ">>>> " . $option->{"author"};
                 $tmpl->param($option);
             }
         }
