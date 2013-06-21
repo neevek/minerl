@@ -80,15 +80,6 @@ use File::Find qw(find);
 use File::Copy qw(copy); 
 use File::Basename qw(dirname); 
 
-=head1 SUBROUTINES/METHODS
-
-=head2 new 
-
-The constructor, which creates the minerl object.
-An ini config file is required to initialize the object.
-
-=cut
-
 sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
