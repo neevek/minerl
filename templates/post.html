@@ -3,4 +3,11 @@ layout: default
 ---
 <div class="post">
     <TMPL_VAR content> 
+
+    Post list:
+    <hr />
+
+    <TMPL_LOOP posts>
+        <a href="<TMPL_VAR link>"><TMPL_VAR title></a><br/>
+    </TMPL_LOOP>
 </div>

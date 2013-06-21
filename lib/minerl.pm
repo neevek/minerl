@@ -40,7 +40,7 @@ sub _initConfigFile {
     $cfg{"system"}->{"template_dir"} = "templates" if !$cfg{"system"}->{"template_dir"};
     $cfg{"system"}->{"template_suffix"} = ".html" if !$cfg{"system"}->{"template_suffix"};
 
-    $cfg{"page"} = {} if !$cfg{"page"};
+    $cfg{"template"} = {} if !$cfg{"template"};
 
     $self->{"cfg"} = \%cfg;
 }
@@ -66,7 +66,7 @@ sub _generatePages {
 
     my $pages = $pm->pages();
     foreach my $page (@$pages) {
-        my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"page"}, $page->headers]);
+        my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }]);
 
         my $destFile = "$outputDir/" . $page->outputFilename();
 

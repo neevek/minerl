@@ -55,6 +55,9 @@ sub formats {
 sub outputFilename {
     my ($self) = @_;
 
+    my $outputFilename = $self->{"output_filename"};
+    return $outputFilename if $outputFilename;
+
     my $slug = $self->header("slug");
     return $slug if $slug;
 
@@ -66,7 +69,8 @@ sub outputFilename {
     $slug =~ s/[ \t]+$//g;         # trim right
     $slug =~ s/[ \t]+/-/g;         # replace all whitespaces with -
 
-    return $slug . ".html";
+    $self->{"output_filename"} = $slug . ".html";
+    return $self->{"output_filename"};
 }
 
 1;

@@ -28,6 +28,7 @@ sub _initPages {
     my ($self, $pageDir, $pageSuffixRegex) = @_;
 
     my $pageArr = $self->{"pages"} = [];
+    my $postArr = $self->{"posts"} = [];
 
     opendir my $openedDir, $pageDir or die "$pageDir: $!";;
     my @files = readdir $openedDir;
@@ -43,6 +44,15 @@ sub _initPages {
         die "$filename: layout is not specified." if !$page->header("layout");
 
         push @$pageArr, $page;
+
+        my $pageType = $page->header("type");
+        if ($pageType && $pageType eq "post") {
+            push @$postArr, {
+                title => $page->header("title"), 
+                createtime => $page->header("createtime"), 
+                link => $page->outputFilename(),
+            }; 
+        }
     }
     closedir($openedDir);
 
@@ -69,6 +79,11 @@ sub _obtainFormatter {
 sub pages {
     my ($self) = @_;
     return $self->{"pages"};
+}
+
+sub posts {
+    my ($self) = @_;
+    return $self->{"posts"};
 }
 
 1;
