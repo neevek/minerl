@@ -2,7 +2,7 @@ html, body {
     background: #000;
     color: #000;
     margin: 0px;
-    font-family: 'Unna', serif;
+    font-family: serif;
 }
 
 #main {
@@ -26,9 +26,11 @@ html, body {
 }
 
 .title {
+    font-family: Georgia, serif;
     border-bottom: #eee 1px solid; 
     margin: 0px;
     padding-bottom: 10px;
+    font-size: 28px;
 }
 
 #sidebar {
@@ -39,13 +41,13 @@ html, body {
 }
 
 #sidebar ul {
-    font-family: 'Titillium Web', sans-serif;
     margin: 0px;
     padding: 0px 0px 0px 16px;
 }
 
 #sidebar li {
-    line-height: 24px;
+    margin-bottom: 12px;
+    list-style: none
 }
 
 #content {
@@ -56,14 +58,15 @@ html, body {
 }
 
 #footer {
-    font-family: 'Titillium Web', sans-serif;
+    /*font-family: 'Titillium Web', sans-serif;*/
+    font-family: Georgia, sans-serif;
     clear: both;
     font-size: 13px;
-    text-align: center;
+    text-align: left;
     margin-top: 18px;
 
-    padding: 12px; 
+    padding: 12px 12px 12px 24px; 
 
     background: #eee;
-    width: auto; padding: 10px;
+    width: auto; 
 }
