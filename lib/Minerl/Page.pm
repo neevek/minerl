@@ -20,7 +20,7 @@ sub new {
 
     my $filename = $self->{"filename"};
     die "Must pass in filename of the page." if !$filename;
-    Minerl::Util::parseFile($filename, $self);
+    Minerl::Util::parsePageFile($filename, $self);
    
     return $self;
 }

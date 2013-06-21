@@ -16,8 +16,8 @@ sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
-    my $pageDir = $self->{"page_dir"} || "./pages";
-    my $pageSuffixRegex = $self->{"page_suffix_regex"} || "\\.(?:md|markdown)\$";
+    my $pageDir = $self->{"page_dir"};
+    my $pageSuffixRegex = $self->{"page_suffix_regex"};
 
     $self->_initPages($pageDir, $pageSuffixRegex);
    

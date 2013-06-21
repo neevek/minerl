@@ -5,49 +5,49 @@ use 5.10.0;
 package Minerl::Util;
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(parseFile);
+our @EXPORT_OK = qw(parsePageFile);
 
 use File::Basename;
 
 use constant {
-    PRE_READ => 1,
-    READ_HEADER => 2,
-    READ_CONTENT => 3 
+    PAGE_PREREAD => 1,
+    PAGE_READ_HEADER => 2,
+    PAGE_READ_CONTENT => 3 
 };
 
 # this subroutine parses file that is composed of a 
 # header section and content section
-sub parseFile {
+sub parsePageFile {
     my ($filename, $hash) = @_;
 
     $hash = $hash || {};
     my $content = "";
-    my $state = PRE_READ;
+    my $state = PAGE_PREREAD;
     open FILE, "< $filename"; 
     while (my $line = <FILE>) {
 
         if ($line =~ /^-{3,}$/) {
-            if ($state == PRE_READ) {
-                $state = READ_HEADER;
+            if ($state == PAGE_PREREAD) {
+                $state = PAGE_READ_HEADER;
                 next; # ignore the dashed line
             }
-            if ($state == READ_HEADER) {
-                $state = READ_CONTENT;
+            if ($state == PAGE_READ_HEADER) {
+                $state = PAGE_READ_CONTENT;
                 next; # ignore the dashed line
             }
-        } elsif ($state == PRE_READ && $line !~ /^-{3,}$/) {
-            $state = READ_CONTENT;
+        } elsif ($state == PAGE_PREREAD && $line !~ /^-{3,}$/) {
+            $state = PAGE_READ_CONTENT;
         }
 
         given ($state) {
-            when (READ_HEADER)  {
+            when (PAGE_READ_HEADER)  {
                 # strip leading and trailing white spaces
                 $line =~ s/^[ \t]+//g;
                 $line =~ s/[ \t\n]+$//g;
                 my ($key, $value) = split "[ \t]*:[ \t]*", $line;
                 $hash->{"headers"}->{$key} = $value;
             }
-            when (READ_CONTENT) {
+            when (PAGE_READ_CONTENT) {
                 $content .= $line; 
             }
         } 
@@ -55,7 +55,7 @@ sub parseFile {
 
     $hash->{"content"} = $content;
 
-    die "$filename: Header section is not closed." if $state == READ_HEADER;
+    die "$filename: Header section is not closed." if $state == PAGE_READ_HEADER;
     close(FILE);
 
     return $hash;

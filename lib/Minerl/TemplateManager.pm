@@ -16,8 +16,8 @@ sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
-    my $templateDir = $self->{"template_dir"} || "./templates";
-    my $templateSuffix = $self->{"template_suffix"} || ".html";
+    my $templateDir = $self->{"template_dir"};
+    my $templateSuffix = $self->{"template_suffix"};
     $self->_initTemplates($templateDir, $templateSuffix);
    
     return $self;
