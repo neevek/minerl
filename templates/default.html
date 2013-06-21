@@ -1,24 +1,12 @@
----
-format: markdown, perl
----
+<!DOCTYPE HTML >
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title><TMPL_VAR title></title>
-        <link type="text/css" src="/css/default.css"/>
+        <link rel="stylesheet" href="/css/default.css" type="text/css" media="screen" charset="utf-8">
     </head>
 
     <body>
         <TMPL_VAR content>
-        <div id="footer">
-            <TMPL_VAR footer>
-            <hr />
-            <TMPL_VAR author>
-        </div>
-
-        <hr />
-        <div id="hello">
-            <TMPL_VAR tags>
-        </div>
     </body>
 </html>

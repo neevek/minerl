@@ -1,5 +1,5 @@
 ---
-title: Perl is such a cool language
+title: Haha, I just built a static site generator
 layout: post 
 format: markdown, perl
 type: post
@@ -8,5 +8,3 @@ type: post
 ## {{ $title }}
 
 Here follows some **markdown**, a link to [Google](http://www.google.com).
-
-*Perl is really cool!!!*

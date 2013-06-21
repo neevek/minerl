@@ -1,4 +1,14 @@
-body {
-    background: #000;
-    color: #ff0000;
+html, body {
+    background: #fff;
+    color: #000;
+}
+
+#sidebar {
+    width: 300px;
+    float: left;
+    border-right: 3px #fff solid;
+    padding-right: 30px
+}
+
+#content {
 }
