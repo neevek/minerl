@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w -Ilib
 use strict;
 use warnings;
 use 5.10.0;
@@ -115,7 +116,29 @@ sub build {
     $self->_copyRawResources();
 }
 
+sub Usage {
+    say "";
+    say "\tminerl generate - generate a new site";
+    say "\tminerl build - build the site in the current directory";
+    say "\tminerl serve - serve the site in the current directory";
+    say "";
+}
+Usage() && exit if $#ARGV == -1;
+
 my $minerl = new Minerl( cfg_file => "minerl.cfg" ); 
-$minerl->build();
+
+given($ARGV[0]) {
+    when("generate") {}
+    when("build") { 
+        $minerl->build();
+    }
+    when("serve"){ 
+        use HTTP::Server::Brick;
+        my $server = HTTP::Server::Brick->new( port => 8888 );
+        $server->mount("/" => {"path" => $minerl->{"cfg"}->{"system"}->{"output_dir"}});
+        $server->start()
+    }
+    default { Usage() }
+}
 
 1;
