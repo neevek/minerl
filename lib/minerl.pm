@@ -14,6 +14,7 @@ use Config::IniFiles;
 use File::Path qw(make_path);
 use File::Find qw(find);
 use File::Copy qw(copy); 
+use File::Basename qw(dirname); 
 
 sub new {
     my ($class, @args) = @_;
@@ -70,6 +71,11 @@ sub _generatePages {
 
         my $destFile = "$outputDir/" . $page->outputFilename();
 
+        #say ">>> outfile: " . $page->outputFilename();
+
+        my $outputSubDir = dirname($destFile);
+        make_path($outputSubDir, { mode => 0755 }) if !-d $outputSubDir;
+
         #say "output: $destFile";
 
         open my $fh, ">:utf8", $destFile or die "Failed to write to '$destFile' - $!";
@@ -96,9 +102,8 @@ sub _copyRawResources {
             make_path ("$outputDir/" . $_, { mode => 0755 });
         } elsif ( -f $_ ) {
             my $srcFile = $_;
-            s|$rawDir||;
-            my ($destFile) = "$outputDir/$_";
-            copy ($srcFile, $destFile);
+            s|$rawDir|$outputDir|;
+            copy ($srcFile, $_);
         }
     }, no_chdir => 1 }, ($rawDir) ); 
 }

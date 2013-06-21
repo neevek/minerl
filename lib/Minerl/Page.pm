@@ -13,12 +13,15 @@ use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
 
 use Minerl::Util;
+use File::Basename;
 
 sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
     my $filename = $self->{"filename"};
+
+    #say "new Page: $filename" if $self->{"DEBUG"};
     die "Must pass in filename of the page." if !$filename;
     Minerl::Util::parsePageFile($filename, $self);
    
@@ -58,19 +61,29 @@ sub outputFilename {
     my $outputFilename = $self->{"output_filename"};
     return $outputFilename if $outputFilename;
 
+    $outputFilename = $self->{"filename"};
+    $outputFilename =~ s|^[^/]*/||g;
+
+    my $dir = dirname($outputFilename);
+
     my $slug = $self->header("slug");
+    if ($slug && $dir ne ".") {
+        $slug = "$dir/$slug";
+    }
     return $slug if $slug;
 
-    $slug = lc $self->header("title");
-    die "Post does not contain a title header: " . $self->{"filename"} if !$slug;
+    $outputFilename = lc $self->header("title");
+    die "Post does not contain a title header: " . $self->{"filename"} if !$outputFilename;
 
-    $slug =~ s/[^a-z]/ /g;
-    $slug =~ s/^[ \t]+//g;         # trim left
-    $slug =~ s/[ \t]+$//g;         # trim right
-    $slug =~ s/[ \t]+/-/g;         # replace all whitespaces with -
+    $outputFilename =~ s/[^a-z]/ /g;
+    $outputFilename =~ s/^[ \t]+//g;         # trim left
+    $outputFilename =~ s/[ \t]+$//g;         # trim right
+    $outputFilename =~ s/[ \t]+/-/g;         # replace all whitespaces with dashes
 
-    $self->{"output_filename"} = $slug . ".html";
-    return $self->{"output_filename"};
+    $outputFilename = $outputFilename . ".html";
+    $outputFilename = "$dir/$outputFilename" if $dir ne ".";
+
+    return $self->{"output_filename"} = $outputFilename;
 }
 
 1;

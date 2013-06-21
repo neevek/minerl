@@ -8,6 +8,7 @@ use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
 
 use File::Basename;
+use File::Find qw(find);
 use Minerl::Page;
 use Minerl::Formatter::Markdown;
 use Minerl::Formatter::Perl;
@@ -30,31 +31,58 @@ sub _initPages {
     my $pageArr = $self->{"pages"} = [];
     my $postArr = $self->{"posts"} = [];
 
-    opendir my $openedDir, $pageDir or die "$pageDir: $!";;
-    my @files = readdir $openedDir;
-    foreach my $filename (@files) {
-        next if $filename !~ /$pageSuffixRegex/;
+    #opendir my $openedDir, $pageDir or die "$pageDir: $!";;
+    #my @files = readdir $openedDir;
+    #foreach my $filename (@files) {
+        #next if $filename !~ /$pageSuffixRegex/;
 
-        #print "found page file: $pageDir/$filename\n" if $self->{"DEBUG"};
+        ##print "found page file: $pageDir/$filename\n" if $self->{"DEBUG"};
 
-        # basename without suffix
-        my ($name) = basename($filename) =~ /([^.]+)/;
-        my $page = new Minerl::Page( filename => "$pageDir/$filename", name => $name );
+        ## basename without suffix
+        #my ($name) = basename($filename) =~ /([^.]+)/;
+        #my $page = new Minerl::Page( filename => "$pageDir/$filename", name => $name );
 
-        die "$filename: layout is not specified." if !$page->header("layout");
+        #die "$filename: layout is not specified." if !$page->header("layout");
 
-        push @$pageArr, $page;
+        #push @$pageArr, $page;
 
-        my $pageType = $page->header("type");
-        if ($pageType && $pageType eq "post") {
-            push @$postArr, {
-                title => $page->header("title"), 
-                createtime => $page->header("createtime"), 
-                link => $page->outputFilename(),
-            }; 
+        #my $pageType = $page->header("type");
+        #if ($pageType && $pageType eq "post") {
+            #push @$postArr, {
+                #title => $page->header("title"), 
+                #createtime => $page->header("createtime"), 
+                #link => $page->outputFilename(),
+            #}; 
+        #}
+    #}
+    #closedir($openedDir);
+
+    die "$pageDir: Directory does not exist." if !-d $pageDir;
+
+    find( { wanted => sub {
+        if ( -f $_ ) {
+            return if $_ !~ /$pageSuffixRegex/;
+
+            #print "found page file: $pageDir/$filename\n" if $self->{"DEBUG"};
+
+            # basename without suffix
+            my ($name) = basename($_) =~ /([^.]+)/;
+            my $page = new Minerl::Page( filename => $_, name => $name );
+
+            die "$_: 'layout' header is not specified." if !$page->header("layout");
+
+            push @$pageArr, $page;
+
+            my $pageType = $page->header("type");
+            if ($pageType && $pageType eq "post") {
+                push @$postArr, {
+                    title => $page->header("title"), 
+                    createtime => $page->header("createtime"), 
+                    link => "/" . $page->outputFilename(),
+                }; 
+            }
         }
-    }
-    closedir($openedDir);
+    }, no_chdir => 1 }, ($pageDir) ); 
 
     $self->_formatPages($pageArr);
 }
