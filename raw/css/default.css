@@ -1,14 +1,69 @@
 html, body {
-    background: #fff;
+    background: #000;
     color: #000;
+    margin: 0px;
+    font-family: 'Unna', serif;
+}
+
+#main {
+    position: relative;
+    background: #fff;
+    width: 800px;
+    margin: 0px auto;
+    height: 100%;
+
+}
+
+#header {
+    font-family: 'Nothing You Could Do', cursive;
+    background: #eee;
+    width: auto; padding: 10px;
+    color: #DC143C;
+    font-weight: bold;
+    font-size: 18px;
+    font-style: italic;
+    text-align: right;
+}
+
+.title {
+    border-bottom: #eee 1px solid; 
+    margin: 0px;
+    padding-bottom: 10px;
 }
 
 #sidebar {
-    width: 300px;
-    float: left;
-    border-right: 3px #fff solid;
-    padding-right: 30px
+    float: right;
+    width: 280px;
+    border-left: 0px #ccc solid;
+    padding: 12px; 
+}
+
+#sidebar ul {
+    font-family: 'Titillium Web', sans-serif;
+    margin: 0px;
+    padding: 0px 0px 0px 16px;
+}
+
+#sidebar li {
+    line-height: 24px;
 }
 
 #content {
+    float: right;
+    width: 460px;
+    height: 100%;
+    padding: 12px 12px 12px 18px;
+}
+
+#footer {
+    font-family: 'Titillium Web', sans-serif;
+    clear: both;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 18px;
+
+    padding: 12px; 
+
+    background: #eee;
+    width: auto; padding: 10px;
 }

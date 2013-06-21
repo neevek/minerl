@@ -1,17 +1,15 @@
 ---
 layout: default
 ---
-<div id="main">
-    <div id="sidebar">
-        Post List
-        <hr />
-        <ul>
+<div id="sidebar">
+    <ul>
         <TMPL_LOOP posts>
         <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a></li>
         </TMPL_LOOP>
-        </ul>
-    </div>  
-    <div id="content">
-        <TMPL_VAR content>
-    </div>
+    </ul>
+</div>  
+
+<div id="content">
+    <h2 class="title"><TMPL_VAR title></h2>
+    <TMPL_VAR content>
 </div>

@@ -5,9 +5,6 @@ format: perl, markdown
 type: post
 ---
 
-## {{ $title }}
-
----
 Yes, this is the second page. let copy something here.
 
 Starting from Perl 5.10.1 (well, 5.10.0, but it didn't work right), you can say
