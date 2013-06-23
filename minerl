@@ -204,7 +204,7 @@ my $go = Getopt::Compact::WithCmd->new(
             desc           => "- Starts an HTTP server to serve the directory specified by the 'output_dir' property in minerl.cfg.",
             other_usage    => ""
         },  
-       "startblog" => {
+       "createblog" => {
             options        => [[[qw(f filename)], qq(File name of the page), "=s", undef, { required => 1 }],
                                [[qw(l layout)], qq(Layout on which the newly created page is to be applied), "=s", undef, { required => 1 }],
                                [[qw(m format)], qq(Format of the page, currently supports and defaults to 'markdown,perl'), ":s", undef, { required => 1, default => "markdown, perl" }],
@@ -233,7 +233,7 @@ given ($command) {
         $server->mount("/" => {"path" => $minerl->{"cfg"}->{"system"}->{"output_dir"}});
         $server->start()
     }
-    when("startblog") {
+    when("createblog") {
         use POSIX qw(strftime);
         my ($date, $time) = strftime("%F %T", localtime $^T) =~ /([^ ]+) (.+)$/;
         

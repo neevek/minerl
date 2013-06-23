@@ -49,7 +49,7 @@ sub parsePageFile {
 
                 # strip trailing white spaces
                 $line =~ s/[ \t\n]+$//g;
-                my ($key, $value) = split "[ \t]*:[ \t]*", $line;
+                my ($key, $value) = $line =~ '^([^:]+):[ \t]*(.*)$';
                 $hash->{"headers"}->{$key} = $value;
             }
             when (PAGE_READ_CONTENT) {
