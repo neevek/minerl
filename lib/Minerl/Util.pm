@@ -23,7 +23,7 @@ sub parsePageFile {
     $hash = $hash || {};
     my $content = "";
     my $state = PAGE_PREREAD;
-    open FILE, "< $filename"; 
+    open FILE, "<:utf8", $filename;
     while (my $line = <FILE>) {
 
         if ($line =~ /^-{3,}$/) {

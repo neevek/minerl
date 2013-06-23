@@ -6,8 +6,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME             => 'minerl',
     AUTHOR           => q{neevek <i@neevek.net>},
-    VERSION_FROM     => 'lib/minerl.pm',
-    ABSTRACT_FROM    => 'lib/minerl.pm',
+    VERSION_FROM     => 'minerl',
+    ABSTRACT_FROM    => 'minerl',
     LICENSE          => 'Artistic_2_0',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.10.0,
@@ -25,6 +25,7 @@ WriteMakefile(
         'HTML::Template' => 2.94,
         'Text::Template' => 1.46,
         'Text::Markdown' => 1.000031,
+        'Getopt::Compact::WithCmd' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'minerl-*' },

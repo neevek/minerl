@@ -92,7 +92,10 @@ sub _formatPages {
 
     foreach my $page (@$pageArr) {
         my $formats = $page->formats();
-        map { $page->applyFormatter($self->_obtainFormatter($_)) } @$formats if $formats;
+        map { 
+             my $formatter = $self->_obtainFormatter($_);
+             $page->applyFormatter($formatter) if $formatter 
+        } @$formats if $formats;
     }
 }
 
@@ -101,6 +104,7 @@ sub _obtainFormatter {
     given ($name) {
         when("markdown") { return new Minerl::Formatter::Markdown() } 
         when("perl") { return new Minerl::Formatter::Perl() } 
+        default { warn "formatter not supported: $name" }
     }
 }
 
