@@ -9,11 +9,12 @@ our @ISA = qw(Minerl::BaseObject);
 
 use File::Basename;
 use File::Find qw(find);
+use File::stat;
+use POSIX;
 use Minerl::Page;
 use Minerl::Formatter::Markdown;
 use Minerl::Formatter::Perl;
 
-use POSIX;
 
 sub new {
     my ($class, @args) = @_;
@@ -31,7 +32,8 @@ sub _initPages {
     my ($self, $pageDir, $pageSuffixRegex) = @_;
 
     my $pageArr = $self->{"pages"} = [];
-    my $postArr = $self->{"posts"} = [];
+
+    my @postArr;
 
     die "$pageDir: Directory does not exist." if !-d $pageDir;
 
@@ -61,10 +63,12 @@ sub _initPages {
                     title => $page->header("title"), 
                     link => "/" . $page->outputFilename(),
                 }; 
-                $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("createtime")))
-                    if $page->header("createtime");
 
-                push @$postArr, $post;
+                $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
+                $post->{"timestamp"} = $page->header("timestamp");
+                $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp")));
+
+                push @postArr, $post;
 
                 # categorize the posts by tags
                 if ($page->header("tags")) {
@@ -84,21 +88,22 @@ sub _initPages {
                     }
                 }
 
-                if ($page->header("createtime")) {
-                    my $monthAsKey = POSIX::strftime("%b, %Y", localtime($page->header("createtime")));
-                    $archivedMonths->{$monthAsKey} = POSIX::strftime("%Y/%m", localtime($page->header("createtime")));
-                    my $postsByMonth = $archivedPosts->{$monthAsKey};
-                    if (!$postsByMonth) {
-                        push @$postsByMonth, $post;
-                        $archivedPosts->{$monthAsKey} = $postsByMonth;
-                    } else {
-                        push @$postsByMonth, $post;
-                    }
+                my $monthAsKey = POSIX::strftime("%b, %Y", localtime($page->header("timestamp")));
+                $archivedMonths->{$monthAsKey} = POSIX::strftime("%Y/%m", localtime($page->header("timestamp")));
+                my $postsByMonth = $archivedPosts->{$monthAsKey};
+                if (!$postsByMonth) {
+                    push @$postsByMonth, $post;
+                    $archivedPosts->{$monthAsKey} = $postsByMonth;
+                } else {
+                    push @$postsByMonth, $post;
                 }
 
             }
         }
     }, no_chdir => 1 }, ($pageDir) ); 
+
+    @postArr = sort { $b->{"timestamp"} <=> $a->{"timestamp"} } @postArr;
+    $self->{"posts"} = \@postArr;
 
     $self->_formatPages($pageArr);
 }

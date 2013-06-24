@@ -285,7 +285,7 @@ given ($command) {
             . "layout: $layout\n"
             . "format: $format\n"
             . "type: post\n"
-            . "createtime: $timestamp\n"
+            . "timestamp: $timestamp\n"
             . "---\n\n";
 
         my $pageDir = $minerl->{"cfg"}->{"system"}->{"page_dir"};
