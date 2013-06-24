@@ -2,11 +2,21 @@
 layout: default
 ---
 <div id="sidebar">
+    <h3>Posts</h3>
     <ul>
         <TMPL_LOOP posts>
         <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a></li>
         </TMPL_LOOP>
     </ul>
+
+    <h3>Tags</h3>
+    <ul>
+        <TMPL_LOOP all_tags>
+        <li><a href="/tags/<TMPL_VAR tag>.html"><TMPL_VAR tag>(<TMPL_VAR count>)</a></li>
+        </TMPL_LOOP>
+    </ul>
+   
+    <h3>Archive</h3>
 </div>  
 
 <div id="content">

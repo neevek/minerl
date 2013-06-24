@@ -31,33 +31,9 @@ sub _initPages {
     my $pageArr = $self->{"pages"} = [];
     my $postArr = $self->{"posts"} = [];
 
-    #opendir my $openedDir, $pageDir or die "$pageDir: $!";;
-    #my @files = readdir $openedDir;
-    #foreach my $filename (@files) {
-        #next if $filename !~ /$pageSuffixRegex/;
-
-        ##print "found page file: $pageDir/$filename\n" if $self->{"DEBUG"};
-
-        ## basename without suffix
-        #my ($name) = basename($filename) =~ /([^.]+)/;
-        #my $page = new Minerl::Page( filename => "$pageDir/$filename", name => $name );
-
-        #die "$filename: layout is not specified." if !$page->header("layout");
-
-        #push @$pageArr, $page;
-
-        #my $pageType = $page->header("type");
-        #if ($pageType && $pageType eq "post") {
-            #push @$postArr, {
-                #title => $page->header("title"), 
-                #createtime => $page->header("createtime"), 
-                #link => $page->outputFilename(),
-            #}; 
-        #}
-    #}
-    #closedir($openedDir);
-
     die "$pageDir: Directory does not exist." if !-d $pageDir;
+
+    my $taggedPosts = $self->{"tagged_posts"} = {};
 
     find( { wanted => sub {
         if ( -f $_ ) {
@@ -75,11 +51,29 @@ sub _initPages {
 
             my $pageType = $page->header("type");
             if ($pageType && $pageType eq "post") {
-                push @$postArr, {
+                my $post = {
                     title => $page->header("title"), 
                     createtime => $page->header("createtime"), 
                     link => "/" . $page->outputFilename(),
                 }; 
+                push @$postArr, $post;
+
+                if ($page->header("tags")) {
+                    my @tags = split /[ \t]*,[ \t]*/, $page->header("tags");
+                    foreach my $t (@tags) {
+                        next if !$t;
+
+                        $t = lc $t;
+
+                        my $postsByTag = $taggedPosts->{$t};
+                        if (!$postsByTag) {
+                            push @$postsByTag, $post;
+                            $taggedPosts->{$t} = $postsByTag;
+                        } else {
+                            push @$postsByTag, $post;
+                        }
+                    }
+                }
             }
         }
     }, no_chdir => 1 }, ($pageDir) ); 
@@ -116,6 +110,45 @@ sub pages {
 sub posts {
     my ($self) = @_;
     return $self->{"posts"};
+}
+
+sub tags {
+    my ($self) = @_;
+    my $taggedPosts = $self->{"tagged_posts"};
+    my @keys = keys %$taggedPosts if $taggedPosts;
+    return \@keys;
+}
+
+sub postCountOfTag {
+    my ($self, $tag) = @_;
+    my $taggedPosts = $self->{"tagged_posts"};
+    if ($taggedPosts) {
+        my $count = @{$taggedPosts->{$tag}};
+        return $count; 
+    } else {
+        return 0;
+    }
+}
+
+sub getPostsByTag {
+    my ($self, $tag) = @_;
+    my $taggedPosts = $self->{"tagged_posts"};
+    return $taggedPosts ? $taggedPosts->{$tag} : undef;
+}
+
+sub allTags {
+    my ($self) = @_;
+    my $taggedPosts = $self->{"tagged_posts"};
+
+    my @allTags;
+    while (my ($tag, $posts) = each %$taggedPosts) {
+        my $count = @$posts;
+        push @allTags, { tag => $tag, count => $count };    
+    }
+
+    @allTags = sort { $a->{"tag"} cmp $b->{"tag"} } @allTags;
+
+    return \@allTags;
 }
 
 1;

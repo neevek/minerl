@@ -104,7 +104,7 @@ sub _initConfigFile {
     my ($self) = @_;
 
     my $cfgFile = $self->{"cfg_file"};
-    -f $cfgFile or die "minerl.cfg not found.";
+    -f $cfgFile or die "$cfgFile not found.";
 
     tie my %cfg, 'Config::IniFiles', ( -file => $cfgFile );
 
@@ -140,24 +140,43 @@ sub _generatePages {
     my $tm = new Minerl::TemplateManager(template_dir => $templateDir, template_suffix => $templateSuffix);
     my $pm = new Minerl::PageManager( page_dir => $pageDir, page_suffix_regex => $pageSuffixRegex); 
 
+    my $allTags = $pm->allTags();
+
     my $pages = $pm->pages();
     foreach my $page (@$pages) {
-        my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }]);
+        if ($page->header("type") && $page->header("type") eq "taglist") {
+            my $tags = $pm->tags();
+            foreach my $tag (@$tags) {
+                my $postsByTag = $pm->getPostsByTag($tag); 
 
-        my $destFile = "$outputDir/" . $page->outputFilename();
+                my $html = $tm->applyTemplate($page->header("layout"), $page->content
+                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }, { tagged_posts => $postsByTag, cur_tag => $tag }, { "all_tags" => $allTags } ]);
 
-        #say ">>> outfile: " . $page->outputFilename();
-
-        my $outputSubDir = dirname($destFile);
-        make_path($outputSubDir, { mode => 0755 }) if !-d $outputSubDir;
-
-        #say "output: $destFile";
-
-        open my $fh, ">:utf8", $destFile or die "Failed to write to '$destFile' - $!";
-        binmode($fh, ":utf8");
-        print $fh $html;
-        close $fh;
+                # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
+                my $destFile = "$outputDir/tags/$tag.html";
+                $self->_writePageFile($outputDir, $destFile, $html);
+            } 
+            next;
+        } else {
+            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }, { "all_tags" => $allTags } ]);
+            my $destFile = "$outputDir/" . $page->outputFilename();
+            $self->_writePageFile($outputDir, $destFile, $html);
+        }
     }
+}
+
+sub _writePageFile {
+    my ($self, $outputDir, $destFile, $html) = @_;
+
+    #say ">>> outfile: " . $page->outputFilename();
+
+    my $outputSubDir = dirname($destFile);
+    make_path($outputSubDir, { mode => 0755 }) if !-d $outputSubDir;
+
+    open my $fh, ">:utf8", $destFile or die "Failed to write to '$destFile' - $!";
+    binmode($fh, ":utf8");
+    print $fh $html;
+    close $fh;
 }
 
 sub _copyRawResources {
@@ -207,7 +226,7 @@ my $go = Getopt::Compact::WithCmd->new(
        "createblog" => {
             options        => [[[qw(f filename)], qq(File name of the page), "=s", undef, { required => 1 }],
                                [[qw(l layout)], qq(Layout on which the newly created page is to be applied), "=s", undef, { required => 1 }],
-                               [[qw(m format)], qq(Format of the page, currently supports and defaults to 'markdown,perl'), ":s", undef, { required => 1, default => "markdown, perl" }],
+                               [[qw(m format)], qq(Format of the page, currently supports 'markdown, perl'), ":s", undef, { required => 1, default => "markdown, perl" }],
                                [[qw(t title)], qq(Title of the blog), ":s", undef, { required => 1, default => "untitled" }],
                                 ],
             args           => "-f <filename> -l <layout> -m [format] -t [title]",

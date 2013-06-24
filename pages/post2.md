@@ -3,6 +3,7 @@ title: Perl is such a cool language
 layout: post 
 format: markdown, perl
 type: post
+tags: c++, perl
 ---
 
 Here follows some **markdown**, a link to [Google](http://www.google.com).
