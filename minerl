@@ -164,14 +164,13 @@ sub _generatePages {
             foreach my $month (@$months) {
                 my $postsByMonth = $pm->getPostsByMonth($month); 
 
-                say $postMonths->[0]->{"month"};
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
                     , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }
                     , { archived_posts => $postsByMonth, cur_month => $month }
                     , { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
 
-                # Pages of 'archive' type are restricted to be output to "$output_dir/months/"
-                my $destFile = "$outputDir/archive/$month.html";
+                # Pages of 'archive' type are restricted to be output to "$output_dir/archives/"
+                my $destFile = "$outputDir/archives/" . $pm->monthLink($month) . ".html";
                 $self->_writePageFile($outputDir, $destFile, $html);
             } 
         } else {

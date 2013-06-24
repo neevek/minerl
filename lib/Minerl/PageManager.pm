@@ -38,6 +38,9 @@ sub _initPages {
     my $taggedPosts = $self->{"tagged_posts"} = {};
     my $archivedPosts = $self->{"archived_posts"} = {};
 
+    # this hash is used to sort the date 
+    my $archivedMonths = $self->{"archived_months"} = {};
+
     find( { wanted => sub {
         if ( -f $_ ) {
             return if $_ !~ /$pageSuffixRegex/;
@@ -82,7 +85,8 @@ sub _initPages {
                 }
 
                 if ($page->header("createtime")) {
-                    my $monthAsKey = POSIX::strftime("%Y/%m", localtime($page->header("createtime")));
+                    my $monthAsKey = POSIX::strftime("%b, %Y", localtime($page->header("createtime")));
+                    $archivedMonths->{$monthAsKey} = POSIX::strftime("%Y/%m", localtime($page->header("createtime")));
                     my $postsByMonth = $archivedPosts->{$monthAsKey};
                     if (!$postsByMonth) {
                         push @$postsByMonth, $post;
@@ -166,6 +170,11 @@ sub months {
     return \@keys;
 }
 
+sub monthLink {
+    my ($self, $month) = @_;
+    return $self->{"archived_months"}->{$month};
+}
+
 sub getPostsByMonth {
     my ($self, $month) = @_;
     my $archivedPosts = $self->{"archived_posts"};
@@ -177,13 +186,16 @@ sub postMonths {
     my ($self) = @_;
     my $archivedPosts = $self->{"archived_posts"};
 
+    my $archivedMonths = $self->{"archived_months"};
+
     my @months;
     while (my ($month, $posts) = each %$archivedPosts) {
         my $count = @$posts;
-        push @months, { month => $month, count => $count };    
+        # format: "June, 2013", "2013/06", "12"
+        push @months, { month_display => $month, month_link => $archivedMonths->{$month},  count => $count };    
     }
 
-    @months = sort { $a->{"month"} cmp $b->{"month"} } @months;
+    @months = sort { $a->{"month_link"} cmp $b->{"month_link"} } @months;
 
     return \@months;
 }
