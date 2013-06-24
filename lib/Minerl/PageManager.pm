@@ -13,6 +13,8 @@ use Minerl::Page;
 use Minerl::Formatter::Markdown;
 use Minerl::Formatter::Perl;
 
+use POSIX;
+
 sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
@@ -34,6 +36,7 @@ sub _initPages {
     die "$pageDir: Directory does not exist." if !-d $pageDir;
 
     my $taggedPosts = $self->{"tagged_posts"} = {};
+    my $archivedPosts = $self->{"archived_posts"} = {};
 
     find( { wanted => sub {
         if ( -f $_ ) {
@@ -53,11 +56,14 @@ sub _initPages {
             if ($pageType && $pageType eq "post") {
                 my $post = {
                     title => $page->header("title"), 
-                    createtime => $page->header("createtime"), 
                     link => "/" . $page->outputFilename(),
                 }; 
+                $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("createtime")))
+                    if $page->header("createtime");
+
                 push @$postArr, $post;
 
+                # categorize the posts by tags
                 if ($page->header("tags")) {
                     my @tags = split /[ \t]*,[ \t]*/, $page->header("tags");
                     foreach my $t (@tags) {
@@ -74,6 +80,18 @@ sub _initPages {
                         }
                     }
                 }
+
+                if ($page->header("createtime")) {
+                    my $monthAsKey = POSIX::strftime("%Y/%m", localtime($page->header("createtime")));
+                    my $postsByMonth = $archivedPosts->{$monthAsKey};
+                    if (!$postsByMonth) {
+                        push @$postsByMonth, $post;
+                        $archivedPosts->{$monthAsKey} = $postsByMonth;
+                    } else {
+                        push @$postsByMonth, $post;
+                    }
+                }
+
             }
         }
     }, no_chdir => 1 }, ($pageDir) ); 
@@ -119,36 +137,55 @@ sub tags {
     return \@keys;
 }
 
-sub postCountOfTag {
-    my ($self, $tag) = @_;
-    my $taggedPosts = $self->{"tagged_posts"};
-    if ($taggedPosts) {
-        my $count = @{$taggedPosts->{$tag}};
-        return $count; 
-    } else {
-        return 0;
-    }
-}
-
 sub getPostsByTag {
     my ($self, $tag) = @_;
     my $taggedPosts = $self->{"tagged_posts"};
     return $taggedPosts ? $taggedPosts->{$tag} : undef;
 }
 
-sub allTags {
+sub postTags {
     my ($self) = @_;
     my $taggedPosts = $self->{"tagged_posts"};
 
-    my @allTags;
+    my @postTags;
     while (my ($tag, $posts) = each %$taggedPosts) {
         my $count = @$posts;
-        push @allTags, { tag => $tag, count => $count };    
+        push @postTags, { tag => $tag, count => $count };    
     }
 
-    @allTags = sort { $a->{"tag"} cmp $b->{"tag"} } @allTags;
+    @postTags = sort { $a->{"tag"} cmp $b->{"tag"} } @postTags;
 
-    return \@allTags;
+    return \@postTags;
+}
+
+# months during which some blog entries were created
+sub months {
+    my ($self) = @_;
+    my $archivedPosts = $self->{"archived_posts"};
+    my @keys = keys %$archivedPosts if $archivedPosts;
+    return \@keys;
+}
+
+sub getPostsByMonth {
+    my ($self, $month) = @_;
+    my $archivedPosts = $self->{"archived_posts"};
+    return $archivedPosts ? $archivedPosts->{$month} : undef;
+}
+
+# months during which some blog entries were created
+sub postMonths {
+    my ($self) = @_;
+    my $archivedPosts = $self->{"archived_posts"};
+
+    my @months;
+    while (my ($month, $posts) = each %$archivedPosts) {
+        my $count = @$posts;
+        push @months, { month => $month, count => $count };    
+    }
+
+    @months = sort { $a->{"month"} cmp $b->{"month"} } @months;
+
+    return \@months;
 }
 
 1;

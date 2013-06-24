@@ -15,7 +15,7 @@ layout: default
         <li><a href="/tags/<TMPL_VAR tag>.html"><TMPL_VAR tag> (<TMPL_VAR count>)</a></li>
         </TMPL_LOOP>
     </ul>
-   
+
     <h3>Archive</h3>
     <ul>
         <TMPL_LOOP post_months>
@@ -25,7 +25,17 @@ layout: default
 </div>  
 
 <div id="content">
-    <h2 class="title"><TMPL_VAR title></h2>
+    <h2 class="title">Month: <TMPL_VAR cur_month></h2>
     created on <TMPL_VAR createtime> Tags: <TMPL_VAR tags><br/>
-    <TMPL_VAR content>
+
+    <div>
+       <TMPL_VAR content> 
+    </div>
+
+    <ul>
+        <TMPL_LOOP archived_posts>
+        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a></li>
+        </TMPL_LOOP>
+    </ul>
+
 </div>

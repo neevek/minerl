@@ -140,25 +140,43 @@ sub _generatePages {
     my $tm = new Minerl::TemplateManager(template_dir => $templateDir, template_suffix => $templateSuffix);
     my $pm = new Minerl::PageManager( page_dir => $pageDir, page_suffix_regex => $pageSuffixRegex); 
 
-    my $allTags = $pm->allTags();
+    my $postTags = $pm->postTags();
+    my $postMonths = $pm->postMonths();
 
     my $pages = $pm->pages();
     foreach my $page (@$pages) {
-        if ($page->header("type") && $page->header("type") eq "taglist") {
+        my $type = $page->header("type");
+        if ($type && $type eq "taglist") {
             my $tags = $pm->tags();
             foreach my $tag (@$tags) {
                 my $postsByTag = $pm->getPostsByTag($tag); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }, { tagged_posts => $postsByTag, cur_tag => $tag }, { "all_tags" => $allTags } ]);
+                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }
+                    , { tagged_posts => $postsByTag, cur_tag => $tag }, { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
 
                 # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
                 my $destFile = "$outputDir/tags/$tag.html";
                 $self->_writePageFile($outputDir, $destFile, $html);
             } 
-            next;
+        } elsif ($type && $type eq "archive") {
+            my $months = $pm->months();
+            foreach my $month (@$months) {
+                my $postsByMonth = $pm->getPostsByMonth($month); 
+
+                say $postMonths->[0]->{"month"};
+                my $html = $tm->applyTemplate($page->header("layout"), $page->content
+                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }
+                    , { archived_posts => $postsByMonth, cur_month => $month }
+                    , { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
+
+                # Pages of 'archive' type are restricted to be output to "$output_dir/months/"
+                my $destFile = "$outputDir/archive/$month.html";
+                $self->_writePageFile($outputDir, $destFile, $html);
+            } 
         } else {
-            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }, { "all_tags" => $allTags } ]);
+            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers
+                    , { posts => $pm->posts() }, { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
             my $destFile = "$outputDir/" . $page->outputFilename();
             $self->_writePageFile($outputDir, $destFile, $html);
         }
@@ -254,7 +272,8 @@ given ($command) {
     }
     when("createblog") {
         use POSIX qw(strftime);
-        my ($date, $time) = strftime("%F %T", localtime $^T) =~ /([^ ]+) (.+)$/;
+        my $timestamp = time;
+        my ($date) = strftime("%F %T", localtime $timestamp) =~ /([^ ]+) (.+)$/;
         
         my $opts = $go->opts;
         my $filename = $opts->{"filename"};
@@ -267,7 +286,7 @@ given ($command) {
             . "layout: $layout\n"
             . "format: $format\n"
             . "type: post\n"
-            . "createtime: $date $time\n"
+            . "createtime: $timestamp\n"
             . "---\n\n";
 
         my $pageDir = $minerl->{"cfg"}->{"system"}->{"page_dir"};
