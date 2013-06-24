@@ -5,7 +5,7 @@ layout: default
     <h3>Posts</h3>
     <ul>
         <TMPL_LOOP posts>
-        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a>(<TMPL_VAR createtime>)</li>
+        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a> - <span class="createtime"><TMPL_VAR createtime></span></li>
         </TMPL_LOOP>
     </ul>
 
@@ -25,12 +25,7 @@ layout: default
 </div>  
 
 <div id="content">
-    <h2 class="title">Month: <TMPL_VAR cur_month></h2>
-    created on <TMPL_VAR createtime> Tags: <TMPL_VAR tags><br/>
-
-    <div>
-       <TMPL_VAR content> 
-    </div>
+    <h2 class="title">== <TMPL_VAR cur_month> ==</h2>
 
     <ul>
         <TMPL_LOOP archived_posts>

@@ -67,6 +67,7 @@ sub _initPages {
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
                 $post->{"timestamp"} = $page->header("timestamp");
                 $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp")));
+                $page->{"headers"}->{"createtime"} = $post->{"createtime"};
 
                 push @postArr, $post;
 
