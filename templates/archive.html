@@ -2,11 +2,11 @@
 layout: default
 ---
 <div id="content">
-    <h2 class="title">== <TMPL_VAR cur_month> ==</h2>
+    <h2 class="title">== <TMPL_VAR __minerl_cur_month> ==</h2>
 
     <ul>
-        <TMPL_LOOP archived_posts>
-        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a></li>
+        <TMPL_LOOP __minerl_archived_posts>
+        <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a></li>
         </TMPL_LOOP>
     </ul>
 

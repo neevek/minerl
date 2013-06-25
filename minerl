@@ -153,9 +153,9 @@ sub _generatePages {
                 my $postsByTag = $pm->postsByTag($tag); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts()
-                    , recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
-                    , tagged_posts => $postsByTag , cur_tag => $tag, "post_tags" => $postTags, "post_months" => $postMonths } ]);
+                    , [$cfg->{"template"}, $page->headers, { __minerl_all_posts => $pm->posts()
+                    , __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , __minerl_tagged_posts => $postsByTag , __minerl_cur_tag => $tag, "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
 
                 # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
                 my $destFile = "$outputDir/tags/$tag.html";
@@ -167,18 +167,18 @@ sub _generatePages {
                 my $postsByMonth = $pm->postsByMonth($month); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts()
-                    , recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
-                    , archived_posts => $postsByMonth, cur_month => $month, "post_tags" => $postTags, "post_months" => $postMonths } ]);
+                    , [$cfg->{"template"}, $page->headers, { __minerl_all_posts => $pm->posts()
+                    , __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , __minerl_archived_posts => $postsByMonth, __minerl_cur_month => $month, "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
 
                 # Pages of 'archive' type are restricted to be output to "$output_dir/archives/"
                 my $destFile = "$outputDir/archives/" . $pm->monthLink($month) . ".html";
                 $self->_writePageFile($outputDir, $destFile, $html);
             } 
         } else {
-            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers
-                    , { posts => $pm->posts(), recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
-                    , "post_tags" => $postTags, "post_months" => $postMonths } ]);
+            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, $page->ctxVars,
+                    , { __minerl_all_posts => $pm->posts(), __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
             my $destFile = "$outputDir/" . $page->outputFilename();
             $self->_writePageFile($outputDir, $destFile, $html);
         }

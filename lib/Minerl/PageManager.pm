@@ -74,23 +74,24 @@ sub _initPages {
                     @tags = grep { $_ } @tags;
 
                     foreach my $t (@tags) {
-                        push @postTags, { name => $t, link => "/tags/$t.html" };
+                        push @postTags, { __minerl_tag_name => $t, __minerl_tag_link => "/tags/$t.html" };
                     }
                 }
 
-                my $post = {
-                    title => $page->header("title"), 
-                    link => "/" . $page->outputFilename(),
-                    content => ${$page->content()},
-                    excerpt => ${$page->content(150)},
-                }; 
-
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
-                $post->{"timestamp"} = $page->header("timestamp");
-                $post->{"createdate"} = POSIX::strftime("%b %d, %Y", localtime($page->header("timestamp")));
-                $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp")));
-                $page->{"headers"}->{"createtime"} = $post->{"createtime"};
-                $page->{"headers"}->{"minerl_tags"} = \@postTags;
+
+                my $post= {
+                    __post_timestamp => $page->header("timestamp"),   # this is for sorting
+                    __post_title => $page->header("title"),
+                    __post_link => "/" . $page->outputFilename(),
+                    __post_createdate => POSIX::strftime("%b %d, %Y", localtime($page->header("timestamp"))),
+                    __post_createtime => POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp"))),
+                    __post_tags => \@postTags,
+                    __post_content => ${$page->content()},
+                    __post_excerpt => ${$page->content(150)},
+                };
+
+                $page->ctxVars($post);
 
                 push @postArr, $post;
 
@@ -121,23 +122,23 @@ sub _initPages {
         }
     }, no_chdir => 1 }, ($pageDir) ); 
 
-    @postArr = sort { $b->{"timestamp"} <=> $a->{"timestamp"} } @postArr;
+    @postArr = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @postArr;
     $self->{"posts"} = \@postArr;
 
-    $self->_formatPages($pageArr);
+    #$self->_formatPages($pageArr);
 }
 
-sub _formatPages {
-    my ($self, $pageArr) = @_;
+#sub _formatPages {
+    #my ($self, $pageArr) = @_;
 
-    foreach my $page (@$pageArr) {
-        my $formats = $page->formats();
-        map { 
-             my $formatter = $self->_obtainFormatter($_);
-             $page->applyFormatter($formatter) if $formatter 
-        } @$formats if $formats;
-    }
-}
+    #foreach my $page (@$pageArr) {
+        #my $formats = $page->formats();
+        #map { 
+             #my $formatter = $self->_obtainFormatter($_);
+             #$page->applyFormatter($formatter) if $formatter 
+        #} @$formats if $formats;
+    #}
+#}
 
 sub _obtainFormatter {
     my ($self, $name) = @_;
@@ -187,10 +188,10 @@ sub postTags {
     my @postTags;
     while (my ($tag, $posts) = each %$taggedPosts) {
         my $count = @$posts;
-        push @postTags, { tag => $tag, count => $count };    
+        push @postTags, { __minerl_tag => $tag, __minerl_post_count => $count };    
     }
 
-    @postTags = sort { $a->{"tag"} cmp $b->{"tag"} } @postTags;
+    @postTags = sort { $a->{"__minerl_tag"} cmp $b->{"__minerl_tag"} } @postTags;
 
     return \@postTags;
 }
@@ -225,10 +226,10 @@ sub postMonths {
     while (my ($month, $posts) = each %$archivedPosts) {
         my $count = @$posts;
         # format: "June, 2013", "2013/06", "12"
-        push @months, { month_display => $month, month_link => $archivedMonths->{$month},  count => $count };    
+        push @months, { __minerl_month_display => $month, __minerl_month_link => $archivedMonths->{$month},  __minerl_post_count => $count };    
     }
 
-    @months = sort { $a->{"month_link"} cmp $b->{"month_link"} } @months;
+    @months = sort { $a->{"__minerl_month_link"} cmp $b->{"__minerl_month_link"} } @months;
 
     return \@months;
 }

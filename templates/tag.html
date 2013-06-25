@@ -5,10 +5,10 @@ layout: default
     <h2 class="title">Blogs posted under: <TMPL_VAR cur_tag></h2>
 
     <ul>
-        <TMPL_LOOP tagged_posts>
-        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a></li>
+        <TMPL_LOOP __minerl_tagged_posts>
+        <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a></li>
         <div class="post_content">
-            <TMPL_VAR excerpt>... 
+            <TMPL_VAR __post_excerpt>... 
         </div>
         </TMPL_LOOP>
     </ul>

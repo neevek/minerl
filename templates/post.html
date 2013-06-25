@@ -4,9 +4,9 @@ layout: default
 <div id="content">
     <h2 class="title"><TMPL_VAR title></h2>
     <div class="postinfo">
-        posted at <span class="createtime"><TMPL_VAR createtime></span> &nbsp;&nbsp;&nbsp;&nbsp; tags:
-        <TMPL_LOOP minerl_tags>
-        <span class="tags"><a href="<TMPL_VAR link>"><TMPL_VAR name></a></span><TMPL_UNLESS __last__>, </TMPL_UNLESS>
+        posted at <span class="createtime"><TMPL_VAR __post_createtime></span> &nbsp;&nbsp;&nbsp;&nbsp; tags:
+        <TMPL_LOOP __post_tags>
+        <span class="tags"><a href="<TMPL_VAR __minerl_tag_link>"><TMPL_VAR __minerl_tag_name></a></span><TMPL_UNLESS __last__>, </TMPL_UNLESS>
         </TMPL_LOOP>
     </div>
     <div class="postcontent">

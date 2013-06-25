@@ -17,22 +17,22 @@
                 <TMPL_VAR content><div id="sidebar">
                     <h3>Posts</h3>
                     <ul>
-                        <TMPL_LOOP recent_posts>
-                        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a> - <span class="createtime"><TMPL_VAR createdate></span></li>
+                        <TMPL_LOOP __minerl_recent_posts>
+                        <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a> - <span class="createtime"><TMPL_VAR __post_createdate></span></li>
                         </TMPL_LOOP>
                     </ul>
 
                     <h3>Tags</h3>
                     <ul>
-                        <TMPL_LOOP post_tags>
-                        <li><a href="/tags/<TMPL_VAR tag>.html"><TMPL_VAR tag> (<TMPL_VAR count>)</a></li>
+                        <TMPL_LOOP __minerl_all_tags>
+                        <li><a href="/tags/<TMPL_VAR __minerl_tag>.html"><TMPL_VAR __minerl_tag> (<TMPL_VAR __minerl_post_count>)</a></li>
                         </TMPL_LOOP>
                     </ul>
 
                     <h3>Archives</h3>
                     <ul>
-                        <TMPL_LOOP post_months>
-                        <li><a href="/archives/<TMPL_VAR month_link>.html"><TMPL_VAR month_display> (<TMPL_VAR count>)</a></li>
+                        <TMPL_LOOP __minerl_archived_months>
+                        <li><a href="/archives/<TMPL_VAR __minerl_month_link>.html"><TMPL_VAR __minerl_month_display> (<TMPL_VAR __minerl_post_count>)</a></li>
                         </TMPL_LOOP>
                     </ul>
                 </div>

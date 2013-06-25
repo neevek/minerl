@@ -63,6 +63,17 @@ sub formats {
     return $formatHeader ? [split "[ \t]*,[ \t]*", $formatHeader] : undef;
 }
 
+sub ctxVars {
+    my ($self, $ctxVars) = @_;
+    $self->{"ctx_vars"} = $ctxVars if $ctxVars;
+    return $self->{"ctx_vars"};
+}
+
+sub ctxVar {
+    my ($self, $key) = @_;
+    return $self->ctxVar($key);
+}
+
 sub outputFilename {
     my ($self, $designatedName) = @_;
 
