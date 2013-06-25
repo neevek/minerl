@@ -3,6 +3,10 @@ layout: default
 ---
 <div id="content">
     <h2 class="title"><TMPL_VAR title></h2>
-    Created on <span class="createtime"><TMPL_VAR createtime></span> Tags: <span class="tags"><TMPL_VAR tags></span><br/>
-    <TMPL_VAR content>
+    <div class="postinfo">
+        posted at <span class="createtime"><TMPL_VAR createtime></span> &nbsp;&nbsp;&nbsp;&nbsp; tags: <span class="tags"><TMPL_VAR tags></span><br/>
+    </div>
+    <div class="postcontent">
+        <TMPL_VAR content>
+    </div>
 </div>

@@ -1,23 +1,34 @@
 html, body {
+    margin:0;
+    padding:0;
+    height:100%;
+
+    font-family: serif;
     background: #000;
     color: #000;
+}
+
+h1, h2, h3, h4, h5 {
     margin: 0px;
-    font-family: serif;
+    margin-bottom: 4px;
 }
 
-#main {
-    position: relative;
-    background: #fff;
+#container {
     width: 800px;
-    margin: 0px auto;
-    height: 100%;
-
-}
+    min-height:100%;
+    position:relative;
+    padding: 0;
+    margin: 0 auto;
+    background: #fff;
+}   
 
 #header {
+    background:#ff0;
+    padding:10px;
+
     font-family: 'Nothing You Could Do', cursive;
     background: #eee;
-    width: auto; padding: 10px;
+
     color: #DC143C;
     font-weight: bold;
     font-size: 18px;
@@ -25,19 +36,51 @@ html, body {
     text-align: right;
 }
 
+#body {
+    padding:16px;
+    padding-bottom:80px;    /* Height of the footer */
+}   
+
+#footer {
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:70px;            /* Height of the footer */
+    background:#eee;
+    padding: 12px;
+    box-sizing:border-box;
+
+    font-family: Georgia, sans-serif;
+    font-size: 13px;
+    text-align: left;
+}
+
+#content {
+    display: inline-block; 
+    width: 480px;
+}   
+
+#sidebar {
+    display: inline-block;
+    width: 252px;
+    vertical-align: top;
+    padding: 8px 6px 0px 24px;
+}
+
 .title {
     font-family: Georgia, serif;
-    border-bottom: #eee 1px solid; 
+    border-bottom: #eee 1px solid;
     margin: 0px;
     padding-bottom: 10px;
     font-size: 28px;
 }
 
-#sidebar {
-    float: right;
-    width: 280px;
-    border-left: 0px #ccc solid;
-    padding: 12px; 
+.postinfo {
+    font-size: 13px;
+}
+
+.postcontent {
+    padding: 8px;
 }
 
 #sidebar ul {
@@ -48,27 +91,6 @@ html, body {
 #sidebar li {
     margin-bottom: 12px;
     list-style: none
-}
-
-#content {
-    float: right;
-    width: 460px;
-    height: 100%;
-    padding: 12px 12px 12px 18px;
-}
-
-#footer {
-    /*font-family: 'Titillium Web', sans-serif;*/
-    font-family: Georgia, sans-serif;
-    clear: both;
-    font-size: 13px;
-    text-align: left;
-    margin-top: 18px;
-
-    padding: 12px 12px 12px 24px; 
-
-    background: #eee;
-    width: auto; 
 }
 
 .createtime {
