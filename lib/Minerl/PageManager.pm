@@ -68,8 +68,8 @@ sub _initPages {
                 my $post = {
                     title => $page->header("title"), 
                     link => "/" . $page->outputFilename(),
-                    content => $page->content(),
-                    excerpt => $page->content(150),
+                    content => ${$page->content()},
+                    excerpt => ${$page->content(150)},
                 }; 
 
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");

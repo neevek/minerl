@@ -24,7 +24,7 @@ sub new {
 
 sub format { 
     my ($self, $content) = @_;
-    return $self->{"available"} ? Text::Markdown::markdown($content) : $content;
+    return $self->{"available"} ? Text::Markdown::markdown($$content) : $$content;
 }
 
 1;

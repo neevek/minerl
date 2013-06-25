@@ -26,13 +26,13 @@ sub format {
     if ($self->{"available"}) {
         my $txtTmpl = Text::Template->new(
             TYPE => "STRING",
-            SOURCE => $content,
+            SOURCE => $$content,
             DELIMITERS => [ "{{", "}}" ]
         ); 
 
         return $txtTmpl->fill_in( HASH => $data );
     }
-    return $content;
+    return $$content;
 }
 
 1;

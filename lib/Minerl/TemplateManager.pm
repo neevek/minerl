@@ -48,6 +48,7 @@ sub _initTemplates {
 
 sub applyTemplate {
     my ($self, $tmplName, $content, $options) = @_;
+
     $content = $self->_applyTemplateRecursively($tmplName, $content, $options);
 
     return $self->_prettyPrintAvailable ? $self->_prettyPrint($content) : $content;
@@ -85,7 +86,7 @@ sub _prettyPrintAvailable {
 sub _prettyPrint {
     my ($self, $content) = @_;
 
-    return HTML::HTML5::Writer->new(
+    return \(HTML::HTML5::Writer->new(
         start_tags => 'force',
         end_tags => 'force', 
     )->document(
@@ -94,7 +95,7 @@ sub _prettyPrint {
         )->pretty_print(
             HTML::HTML5::Parser->new->parse_string( $content )
         )
-    );
+    ));
 }
 
 1;

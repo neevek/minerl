@@ -180,7 +180,6 @@ sub _generatePages {
                     , { posts => $pm->posts(), recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
                     , "post_tags" => $postTags, "post_months" => $postMonths } ]);
             my $destFile = "$outputDir/" . $page->outputFilename();
-
             $self->_writePageFile($outputDir, $destFile, $html);
         }
     }
@@ -190,13 +189,13 @@ sub _writePageFile {
     my ($self, $outputDir, $destFile, $html) = @_;
 
     #say ">>> outfile: " . $page->outputFilename();
-
+    
     my $outputSubDir = dirname($destFile);
     make_path($outputSubDir, { mode => 0755 }) if !-d $outputSubDir;
 
     open my $fh, ">:utf8", $destFile or die "Failed to write to '$destFile' - $!";
     binmode($fh, ":utf8");
-    print $fh $html;
+    print $fh $$html;
     close $fh;
 }
 
