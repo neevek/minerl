@@ -23,14 +23,37 @@ h1, h2, h3, h4, h5 {
 }   
 
 #header {
-    font-family: 'Nothing You Could Do', cursive;
     background: #eee;
+    width: 100%
+    display: block;
+}
+
+#header #nav {
+    background: #345;
+}
+
+#header #nav ul {
+    margin: 0px;
+    padding: 0px 0px 0px 16px;
+}
+
+#header #nav li {
+    float: left;
+    font-family: Arial;
+    font-size: 14px;
+    list-style: none;
+    margin-top: 24px;
+    margin-right: 16px;
+}
+
+#header #sig {
+    font-family: 'Nothing You Could Do', cursive;
     color: #000;
     font-weight: bold;
     font-size: 20px;
     font-style: italic;
     text-align: right;
-    padding:10px;
+    padding: 10px 10px 6px 10px;
 }
 
 #body {

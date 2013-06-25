@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<div id="content">
+    <ul>
+        <TMPL_LOOP __minerl_all_posts>
+        <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a></li>
+        <div class="post_content">
+            <TMPL_VAR __post_excerpt>... 
+        </div>
+        </TMPL_LOOP>
+    </ul>
+
+</div>
