@@ -67,6 +67,19 @@ h1, h2, h3, h4, h5 {
     padding: 6px 6px 0px 24px;
 }
 
+code {
+    display: inline;
+    background: #f3f3f3;
+    border: 1px #ccc solid;
+    padding: 2px;
+}
+pre code {
+    display: block;
+    background: #f3f3f3;
+    border: 1px #ccc solid;
+    padding: 4px 2px 4px 2px;
+}
+
 .title {
     font-family: Georgia, serif;
     border-bottom: #eee 1px solid;
@@ -83,7 +96,7 @@ h1, h2, h3, h4, h5 {
     font-family: serif;
 }
 
-.postmeta_createdate {
+.createdate {
     font-size: 12px;
     color: #666;
 }

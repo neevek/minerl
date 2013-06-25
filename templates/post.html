@@ -5,7 +5,7 @@ layout: default
     <h2 class="title"><TMPL_VAR title></h2>
 
     <div class="postmeta">
-        <span class="postmeta_text">Posted on</span> <span class="postmeta_createdate"><a href="#" title="<TMPL_VAR __post_createtime>"><TMPL_VAR __post_createdate></a></span> by <span class="author"><TMPL_VAR author></span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="postmeta_text">Tags:</span>
+        <span class="postmeta_text">Posted on</span> <span class="createdate"><a href="#" title="<TMPL_VAR __post_createtime>"><TMPL_VAR __post_createdate></a></span> by <span class="author"><TMPL_VAR author></span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="postmeta_text">Tags:</span>
         <TMPL_LOOP __post_tags>
         <span class="postmeta_tags"><a href="<TMPL_VAR __minerl_tag_link>"><TMPL_VAR __minerl_tag_name></a></span><TMPL_UNLESS __last__>, </TMPL_UNLESS>
         </TMPL_LOOP>
