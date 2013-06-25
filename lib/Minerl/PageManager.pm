@@ -150,7 +150,7 @@ sub posts {
     } else {
         my $posts = $self->{"posts"}; 
         if (scalar @$posts > $limit) {
-            my @slice = $posts->[0..$limit]; 
+            my @slice = @$posts[0..$limit-1]; 
             return \@slice;
         }
         return $posts;
