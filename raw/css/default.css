@@ -23,17 +23,14 @@ h1, h2, h3, h4, h5 {
 }   
 
 #header {
-    background:#ff0;
-    padding:10px;
-
     font-family: 'Nothing You Could Do', cursive;
     background: #eee;
-
-    color: #DC143C;
+    color: #000;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 20px;
     font-style: italic;
     text-align: right;
+    padding:10px;
 }
 
 #body {
@@ -47,7 +44,7 @@ h1, h2, h3, h4, h5 {
     width:100%;
     height:70px;            /* Height of the footer */
     background:#eee;
-    padding: 12px;
+    padding: 14px;
     box-sizing:border-box;
 
     font-family: Georgia, sans-serif;
@@ -67,13 +64,29 @@ h1, h2, h3, h4, h5 {
     padding: 6px 6px 0px 24px;
 }
 
+#sidebar ul {
+    margin: 0px;
+    padding: 0px 0px 0px 16px;
+}
+
+#sidebar li {
+    font-family: Arial;
+    font-size: 14px;
+    margin-bottom: 6px;
+    list-style: none
+}
+
 code {
+    font-family: Courier;
+    font-size: 14px;
     display: inline;
     background: #f3f3f3;
     border: 1px #ccc solid;
-    padding: 2px;
+    padding: 1px 2px;
 }
 pre code {
+    font-family: Courier;
+    font-size: 14px;
     display: block;
     background: #f3f3f3;
     border: 1px #ccc solid;
@@ -89,23 +102,24 @@ pre code {
 }
 
 .postmeta{
-    font-size: 13px;
+    font-family: Arial;
+    font-size: 12px;
+    padding: 3px 3px 0px 3px;
 }
 
 .postmeta_text {
-    font-family: serif;
 }
 
 .createdate {
-    font-size: 12px;
+    font-size: 10px;
     color: #666;
 }
 
 .postmeta_tags {
     font-size: 14px;
     color: #333;
-    font-style: italic;
-    font-weight: bold;
+    /*font-style: italic;*/
+    /*font-weight: bold;*/
 }
 
 .author {
@@ -115,17 +129,10 @@ pre code {
 }
 
 .postcontent {
+    font-family: Times;
     padding: 8px;
-}
-
-#sidebar ul {
-    margin: 0px;
-    padding: 0px 0px 0px 16px;
-}
-
-#sidebar li {
-    margin-bottom: 12px;
-    list-style: none
+    font-size: 16px;
+    line-height: 20px;
 }
 
 A:link {
