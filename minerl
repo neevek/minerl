@@ -247,6 +247,7 @@ my $go = Getopt::Compact::WithCmd->new(
             options        => [[[qw(f filename)], qq(File name of the page), "=s", undef, { required => 1 }],
                                [[qw(l layout)], qq(Layout on which the newly created page is to be applied), "=s", undef, { required => 1 }],
                                [[qw(m format)], qq(Format of the page, currently supports 'markdown, perl'), ":s", undef, { required => 1, default => "markdown, perl" }],
+                               [[qw(g tags)], qq(Tags for the blog, separated by commas), ":s", undef, { required => 1, default => "uncategorized" }],
                                [[qw(t title)], qq(Title of the blog), ":s", undef, { required => 1, default => "untitled" }],
                                 ],
             args           => "-f <filename> -l <layout> -m [format] -t [title]",
@@ -281,6 +282,7 @@ given ($command) {
         my $filename = $opts->{"filename"};
         my $layout = $opts->{"layout"};
         my $format = $opts->{"format"};
+        my $tags = $opts->{"tags"};
         my $title = $opts->{"title"};
 
         my $headers = "---\n"
@@ -288,6 +290,7 @@ given ($command) {
             . "layout: $layout\n"
             . "format: $format\n"
             . "type: post\n"
+            . "tags: $tags\n"
             . "timestamp: $timestamp\n"
             . "---\n\n";
 
