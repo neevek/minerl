@@ -65,6 +65,19 @@ sub _initPages {
 
             my $pageType = $page->header("type");
             if ($pageType && $pageType eq "post") {
+
+                my @postTags;
+
+                my @tags;
+                if ($page->header("tags")) {
+                    @tags = split /[ \t]*,[ \t]*/, $page->header("tags");
+                    @tags = grep { $_ } @tags;
+
+                    foreach my $t (@tags) {
+                        push @postTags, { name => $t, link => "/tags/$t.html" };
+                    }
+                }
+
                 my $post = {
                     title => $page->header("title"), 
                     link => "/" . $page->outputFilename(),
@@ -74,26 +87,23 @@ sub _initPages {
 
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
                 $post->{"timestamp"} = $page->header("timestamp");
+                $post->{"createdate"} = POSIX::strftime("%b %d, %Y", localtime($page->header("timestamp")));
                 $post->{"createtime"} = POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp")));
                 $page->{"headers"}->{"createtime"} = $post->{"createtime"};
+                $page->{"headers"}->{"minerl_tags"} = \@postTags;
 
                 push @postArr, $post;
 
                 # categorize the posts by tags
-                if ($page->header("tags")) {
-                    my @tags = split /[ \t]*,[ \t]*/, $page->header("tags");
-                    foreach my $t (@tags) {
-                        next if !$t;
+                foreach my $t (@tags) {
+                    $t = lc $t;
 
-                        $t = lc $t;
-
-                        my $postsByTag = $taggedPosts->{$t};
-                        if (!$postsByTag) {
-                            push @$postsByTag, $post;
-                            $taggedPosts->{$t} = $postsByTag;
-                        } else {
-                            push @$postsByTag, $post;
-                        }
+                    my $postsByTag = $taggedPosts->{$t};
+                    if (!$postsByTag) {
+                        push @$postsByTag, $post;
+                        $taggedPosts->{$t} = $postsByTag;
+                    } else {
+                        push @$postsByTag, $post;
                     }
                 }
 

@@ -10,7 +10,7 @@ our @ISA = qw(Minerl::Page);
 
 sub build {
     my ($self) = @_; 
-    $self->{"template"} = HTML::Template->new_scalar_ref($self->content, die_on_bad_params => 0);
+    $self->{"template"} = HTML::Template->new_scalar_ref($self->content, die_on_bad_params => 0, loop_context_vars => 1);
 }
 
 sub apply {
