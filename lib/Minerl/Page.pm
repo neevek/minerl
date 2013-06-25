@@ -39,8 +39,16 @@ sub headers {
 }
 
 sub content {
-    my ($self) = @_;
-    return $self->{"content"};
+    my ($self, $limit) = @_;
+    if (!$limit) {
+        return $self->{"content"};
+    } else {
+        my $content = $self->{"content"};
+        if (length $content > $limit) {
+            return substr $content, 0, $limit;
+        }
+        return $content;
+    }
 }
 
 sub applyFormatter {

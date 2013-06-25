@@ -53,6 +53,12 @@ sub _initPages {
             my ($name) = basename($_) =~ /([^.]+)/;
             my $page = new Minerl::Page( filename => $_, name => $name );
 
+            my $formats = $page->formats();
+            map { 
+                my $formatter = $self->_obtainFormatter($_);
+                $page->applyFormatter($formatter) if $formatter 
+            } @$formats if $formats;
+
             die "$_: 'layout' header is not specified." if !$page->header("layout");
 
             push @$pageArr, $page;
@@ -62,6 +68,8 @@ sub _initPages {
                 my $post = {
                     title => $page->header("title"), 
                     link => "/" . $page->outputFilename(),
+                    content => $page->content(),
+                    excerpt => $page->content(150),
                 }; 
 
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
@@ -136,8 +144,17 @@ sub pages {
 }
 
 sub posts {
-    my ($self) = @_;
-    return $self->{"posts"};
+    my ($self, $limit) = @_;
+    if (!$limit) {
+        return $self->{"posts"};
+    } else {
+        my $posts = $self->{"posts"}; 
+        if (scalar @$posts > $limit) {
+            my @slice = $posts->[0..$limit]; 
+            return \@slice;
+        }
+        return $posts;
+    }
 }
 
 sub tags {
@@ -147,7 +164,7 @@ sub tags {
     return \@keys;
 }
 
-sub getPostsByTag {
+sub postsByTag {
     my ($self, $tag) = @_;
     my $taggedPosts = $self->{"tagged_posts"};
     return $taggedPosts ? $taggedPosts->{$tag} : undef;
@@ -181,7 +198,7 @@ sub monthLink {
     return $self->{"archived_months"}->{$month};
 }
 
-sub getPostsByMonth {
+sub postsByMonth {
     my ($self, $month) = @_;
     my $archivedPosts = $self->{"archived_posts"};
     return $archivedPosts ? $archivedPosts->{$month} : undef;

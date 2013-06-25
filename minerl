@@ -115,6 +115,7 @@ sub _initConfigFile {
     $cfg{"system"}->{"page_suffix_regex"} = "\\.(?:md|markdown|html)\$" if !$cfg{"system"}->{"page_suffix_regex"};
     $cfg{"system"}->{"template_dir"} = "templates" if !$cfg{"system"}->{"template_dir"};
     $cfg{"system"}->{"template_suffix"} = ".html" if !$cfg{"system"}->{"template_suffix"};
+    $cfg{"system"}->{"recent_posts_limit"} = 5 if !$cfg{"system"}->{"recent_posts_limit"};
 
     $cfg{"template"} = {} if !$cfg{"template"};
 
@@ -149,11 +150,12 @@ sub _generatePages {
         if ($type && $type eq "taglist") {
             my $tags = $pm->tags();
             foreach my $tag (@$tags) {
-                my $postsByTag = $pm->getPostsByTag($tag); 
+                my $postsByTag = $pm->postsByTag($tag); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }
-                    , { tagged_posts => $postsByTag, cur_tag => $tag }, { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
+                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts()
+                    , recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , tagged_posts => $postsByTag , cur_tag => $tag, "post_tags" => $postTags, "post_months" => $postMonths } ]);
 
                 # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
                 my $destFile = "$outputDir/tags/$tag.html";
@@ -162,12 +164,12 @@ sub _generatePages {
         } elsif ($type && $type eq "archive") {
             my $months = $pm->months();
             foreach my $month (@$months) {
-                my $postsByMonth = $pm->getPostsByMonth($month); 
+                my $postsByMonth = $pm->postsByMonth($month); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts() }
-                    , { archived_posts => $postsByMonth, cur_month => $month }
-                    , { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
+                    , [$cfg->{"template"}, $page->headers, { posts => $pm->posts()
+                    , recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , archived_posts => $postsByMonth, cur_month => $month, "post_tags" => $postTags, "post_months" => $postMonths } ]);
 
                 # Pages of 'archive' type are restricted to be output to "$output_dir/archives/"
                 my $destFile = "$outputDir/archives/" . $pm->monthLink($month) . ".html";
@@ -175,8 +177,10 @@ sub _generatePages {
             } 
         } else {
             my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers
-                    , { posts => $pm->posts() }, { "post_tags" => $postTags }, { "post_months" => $postMonths } ]);
+                    , { posts => $pm->posts(), recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , "post_tags" => $postTags, "post_months" => $postMonths } ]);
             my $destFile = "$outputDir/" . $page->outputFilename();
+
             $self->_writePageFile($outputDir, $destFile, $html);
         }
     }

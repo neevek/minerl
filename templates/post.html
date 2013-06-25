@@ -1,29 +1,6 @@
 ---
 layout: default
 ---
-<div id="sidebar">
-    <h3>Posts</h3>
-    <ul>
-        <TMPL_LOOP posts>
-        <li><a href="<TMPL_VAR link>"><TMPL_VAR title></a> - <span class="createtime"><TMPL_VAR createtime></span></li>
-        </TMPL_LOOP>
-    </ul>
-
-    <h3>Tags</h3>
-    <ul>
-        <TMPL_LOOP post_tags>
-        <li><a href="/tags/<TMPL_VAR tag>.html"><TMPL_VAR tag> (<TMPL_VAR count>)</a></li>
-        </TMPL_LOOP>
-    </ul>
-   
-    <h3>Archives</h3>
-    <ul>
-        <TMPL_LOOP post_months>
-        <li><a href="/archives/<TMPL_VAR month_link>.html"><TMPL_VAR month_display> (<TMPL_VAR count>)</a></li>
-        </TMPL_LOOP>
-    </ul>
-</div>  
-
 <div id="content">
     <h2 class="title"><TMPL_VAR title></h2>
     Created on <span class="createtime"><TMPL_VAR createtime></span> Tags: <span class="tags"><TMPL_VAR tags></span><br/>
