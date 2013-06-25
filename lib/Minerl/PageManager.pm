@@ -85,7 +85,7 @@ sub _initPages {
                     __post_title => $page->header("title"),
                     __post_link => "/" . $page->outputFilename(),
                     __post_createdate => POSIX::strftime("%b %d, %Y", localtime($page->header("timestamp"))),
-                    __post_createtime => POSIX::strftime("%b %d, %Y %H:%M:%S", localtime($page->header("timestamp"))),
+                    __post_createtime => POSIX::strftime("%I:%M %p", localtime($page->header("timestamp"))),
                     __post_tags => \@postTags,
                     __post_content => ${$page->content()},
                     __post_excerpt => ${$page->content(150)},

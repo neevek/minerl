@@ -64,7 +64,7 @@ h1, h2, h3, h4, h5 {
     display: inline-block;
     width: 252px;
     vertical-align: top;
-    padding: 8px 6px 0px 24px;
+    padding: 6px 6px 0px 24px;
 }
 
 .title {
@@ -75,8 +75,30 @@ h1, h2, h3, h4, h5 {
     font-size: 28px;
 }
 
-.postinfo {
+.postmeta{
     font-size: 13px;
+}
+
+.postmeta_text {
+    font-family: serif;
+}
+
+.postmeta_createdate {
+    font-size: 12px;
+    color: #666;
+}
+
+.postmeta_tags {
+    font-size: 14px;
+    color: #333;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.author {
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Georgia, serif;
 }
 
 .postcontent {
@@ -91,18 +113,6 @@ h1, h2, h3, h4, h5 {
 #sidebar li {
     margin-bottom: 12px;
     list-style: none
-}
-
-.createtime {
-    font-size: 12px;
-    color: #666;
-}
-
-.tags {
-    font-size: 13px;
-    color: #333;
-    font-style: italic;
-    font-weight: bold;
 }
 
 A:link {
