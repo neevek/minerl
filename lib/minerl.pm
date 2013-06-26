@@ -113,7 +113,7 @@ sub _initConfigFile {
 }
 
 sub _generatePages {
-    my ($self) = @_;
+    my ($self, $verbose) = @_;
 
     my $cfg = $self->{"cfg"};
     my $pageDir = $cfg->{"system"}->{"page_dir"};
@@ -136,6 +136,8 @@ sub _generatePages {
 
     my $pages = $pm->pages();
     foreach my $page (@$pages) {
+        print "processing page: $page->{filename}\n" if $verbose;
+
         my $type = $page->header("type");
         if ($type && $type eq "taglist") {
             my $tags = $pm->tags();
@@ -150,6 +152,8 @@ sub _generatePages {
                 # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
                 my $destFile = "$outputDir/tags/$tag.html";
                 $self->_writePageFile($outputDir, $destFile, $html);
+
+                print "  generated tag page: $destFile\n" if $verbose;
             } 
         } elsif ($type && $type eq "archive") {
             my $months = $pm->months();
@@ -164,6 +168,8 @@ sub _generatePages {
                 # Pages of 'archive' type are restricted to be output to "$output_dir/archives/"
                 my $destFile = "$outputDir/archives/" . $pm->monthLink($month) . ".html";
                 $self->_writePageFile($outputDir, $destFile, $html);
+
+                print "  generated archive page: $destFile\n" if $verbose;
             } 
         } else {
             my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, $page->ctxVars,
@@ -171,6 +177,8 @@ sub _generatePages {
                     , "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
             my $destFile = "$outputDir/" . $page->outputFilename();
             $self->_writePageFile($outputDir, $destFile, $html);
+
+            print "  generated normal page: $destFile\n" if $verbose;
         }
     }
 }
@@ -188,7 +196,7 @@ sub _writePageFile {
 }
 
 sub _copyRawResources {
-    my ($self) = @_;
+    my ($self, $verbose) = @_;
 
     my $cfg = $self->{"cfg"};
     my $rawDir = $cfg->{"system"}->{"raw_dir"};
@@ -206,15 +214,17 @@ sub _copyRawResources {
             my $srcFile = $_;
             s|$rawDir|$outputDir|;
             copy ($srcFile, $_);
+            
+            print "  copied $srcFile to $_\n" if $verbose;
         }
     }, no_chdir => 1 }, ($rawDir) ); 
 }
 
 sub build {
-    my ($self) = @_;
+    my ($self, $verbose) = @_;
 
-    $self->_generatePages();
-    $self->_copyRawResources();
+    $self->_generatePages($verbose);
+    $self->_copyRawResources($verbose);
 }
 
 1;

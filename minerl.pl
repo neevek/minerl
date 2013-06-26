@@ -9,14 +9,16 @@ use Getopt::Compact::WithCmd;
 my $go = Getopt::Compact::WithCmd->new(
     command_struct => {
        "build" => {
-            options        => [[[qw(r rebuild)], qq(Rebuild all the pages.), "!", { default => 0}]],
-            args           => "",
+            options        => [[[qw(r rebuild)], qq(Rebuild all the pages.), "!", undef, { default => 0}],
+                               [[qw(v verbose)], qq(Print details.), "!", undef, { default => 0 }]
+                                ],
+            args           => "[-r] [-v] [-h]",
             desc           => "- Applly the templates on the pages, generate the final HTML pages.",
             other_usage    => ""
         },  
        "serve" => {
             options        => [[[qw(p port)], qq(The port which the HTTP server listens on), "=i", undef, { required => 1, default => 8888 }]],
-            args           => "[port]",
+            args           => "[-p port]",
             desc           => "- Starts an HTTP server to serve the directory specified by the 'output_dir' property in minerl.cfg.",
             other_usage    => ""
         },  
@@ -27,7 +29,7 @@ my $go = Getopt::Compact::WithCmd->new(
                                [[qw(g tags)], qq(Tags for the post, separated by commas), ":s", undef, { required => 1, default => "uncategorized" }],
                                [[qw(t title)], qq(Title of the post), ":s", undef, { required => 1, default => "untitled" }],
                                 ],
-            args           => "-f <filename> -l <layout> -m [format] -t [title]",
+            args           => "<-f filename> <-l layout> [-m format] [-g tags] [-t title]",
             desc           => "- Creates the skeleton of a new post.",
             other_usage    => ""
         },  
@@ -43,7 +45,7 @@ $go->show_usage if !$command;
 my $minerl = new minerl( cfg_file => "minerl.cfg" ); 
 
 if ($command eq 'build') {
-    $minerl->build();
+    $minerl->build($opts->{"verbose"});
 } elsif ($command eq 'serve') {
     use HTTP::Server::Brick;
     my $server = HTTP::Server::Brick->new( host => "localhost", port => $opts->{"port"});
