@@ -4,6 +4,8 @@ minerl - A static site generator written in Perl
 
 =cut
 
+=head1 VERSION
+
 our $VERSION = '0.01';
 
 =head1 SYNOPSIS
@@ -12,6 +14,11 @@ our $VERSION = '0.01';
     my $minerl = new minerl( cfg_file => "minerl.cfg" ); 
     minerl->build();
     ...
+
+=head1 DESCRIPTION
+
+This class exposes only one public method - build(), which is used to generate
+pages of the site and copy all raw resources to the output directory.
 
 =head1 AUTHOR
 
@@ -57,6 +64,8 @@ CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
 CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+=head1 METHODS
+
 =cut
 
 package minerl;
@@ -76,8 +85,8 @@ use File::Basename qw(dirname);
 
 =head2 new 
 
-The constructor, which creates the minerl object.
-An ini config file is required to initialize the object.
+The constructor, which initializes configurations based on the configuration
+file passed in as an arguement, usually C<minerl.cfg>
 
 =cut
 
@@ -89,6 +98,13 @@ sub new {
 
     return $self;
 }
+
+=head2 _initConfigFile
+
+For internal use only, it uses C<Config::IniFiles> to read the configurations
+and setup defaults for properties that are absent in the configuration file
+
+=cut
 
 sub _initConfigFile {
     my ($self) = @_;
@@ -111,6 +127,14 @@ sub _initConfigFile {
 
     $self->{"cfg"} = \%cfg;
 }
+
+=head2 _generatePages
+
+The main routine that generates all the HTML pages of the site, it reads all
+files that match the specified suffix regex in C<page_dir>, applies the specified
+templates on the pages, writes the final files to C<output_dir>.
+
+=cut
 
 sub _generatePages {
     my ($self, $verbose) = @_;
@@ -183,6 +207,12 @@ sub _generatePages {
     }
 }
 
+=head2 _writePageFile
+
+Reusable method that outputs a file to C<output_dir>
+
+=cut
+
 sub _writePageFile {
     my ($self, $outputDir, $destFile, $html) = @_;
 
@@ -194,6 +224,12 @@ sub _writePageFile {
     print $fh $$html;
     close $fh;
 }
+
+=head2 _copyRawResources
+
+Copies verbatim all files under C<raw_dir> to C<output_dir>.
+
+=cut
 
 sub _copyRawResources {
     my ($self, $verbose) = @_;
@@ -219,6 +255,13 @@ sub _copyRawResources {
         }
     }, no_chdir => 1 }, ($rawDir) ); 
 }
+
+=head2 build
+
+Public method that builds the site, it simply does two things:
+generates HTML pages and copies static resources to C<output_dir>
+
+=cut
 
 sub build {
     my ($self, $verbose) = @_;

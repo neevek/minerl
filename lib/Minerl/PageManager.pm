@@ -135,8 +135,8 @@ sub _obtainFormatter {
     my ($self, $name) = @_;
     my $formatterHash = $self->{"formatters"};
     if (!$formatterHash) {
-        $formatterHash->{"markdown"} = return new Minerl::Formatter::Markdown();
-        $formatterHash->{"perl"} = return new Minerl::Formatter::Perl();
+        $formatterHash->{"markdown"} = new Minerl::Formatter::Markdown();
+        $formatterHash->{"perl"} = new Minerl::Formatter::Perl();
     }
 
     if (defined $formatterHash->{$name}) {
