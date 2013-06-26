@@ -1,4 +1,3 @@
-##!/usr/bin/perl -w -Ilib
 =head1 NAME
 
 minerl - A static site generator written in Perl
@@ -60,20 +59,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-use strict;
-use warnings;
-use 5.10.0;
-
 package minerl;
 use encoding "utf-8";
 
 our $VERSION = '0.01';
 
-use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
-
-use Minerl::TemplateManager;
-use Minerl::PageManager;
 
 use Config::IniFiles;
 use File::Path qw(make_path);
@@ -187,8 +178,6 @@ sub _generatePages {
 sub _writePageFile {
     my ($self, $outputDir, $destFile, $html) = @_;
 
-    #say ">>> outfile: " . $page->outputFilename();
-    
     my $outputSubDir = dirname($destFile);
     make_path($outputSubDir, { mode => 0755 }) if !-d $outputSubDir;
 

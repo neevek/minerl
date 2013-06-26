@@ -1,20 +1,11 @@
-use strict;
-use warnings;
-use 5.10.0;
-
 package Minerl::PageManager;
 
-use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
 
 use File::Basename;
 use File::Find qw(find);
 use File::stat;
 use POSIX;
-use Minerl::Page;
-use Minerl::Formatter::Markdown;
-use Minerl::Formatter::Perl;
-
 
 sub new {
     my ($class, @args) = @_;
@@ -142,10 +133,16 @@ sub _initPages {
 
 sub _obtainFormatter {
     my ($self, $name) = @_;
-    given ($name) {
-        when("markdown") { return new Minerl::Formatter::Markdown() } 
-        when("perl") { return new Minerl::Formatter::Perl() } 
-        default { warn "formatter not supported: $name" }
+    my $formatterHash = $self->{"formatters"};
+    if (!$formatterHash) {
+        $formatterHash->{"markdown"} = return new Minerl::Formatter::Markdown();
+        $formatterHash->{"perl"} = return new Minerl::Formatter::Perl();
+    }
+
+    if (defined $formatterHash->{$name}) {
+        return $formatterHash->{$name};
+    } else {
+        warn "formatter not supported: $name"
     }
 }
 

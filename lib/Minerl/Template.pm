@@ -1,10 +1,5 @@
-use strict;
-use warnings;
-use 5.10.0;
-
 package Minerl::Template;
 
-use Minerl::Page;
 use HTML::Template;
 our @ISA = qw(Minerl::Page);
 

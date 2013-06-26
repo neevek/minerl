@@ -1,16 +1,8 @@
-use strict;
-use warnings;
-use 5.10.0;
-
 package Minerl::TemplateManager;
 
-use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
 
-use Minerl::Util;
-
 use File::Basename;
-use Minerl::Template;
 
 sub new {
     my ($class, @args) = @_;

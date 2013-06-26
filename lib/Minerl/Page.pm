@@ -1,18 +1,12 @@
+package Minerl::Page;
+
 =head1 
     Page is an abstraction of the content of a file that
     is composed of a header section and a content section.
 =cut
 
-use strict;
-use warnings;
-use 5.10.0;
-
-package Minerl::Page;
-
-use Minerl::BaseObject;
 our @ISA = qw(Minerl::BaseObject);
 
-use Minerl::Util;
 use File::Basename;
 
 sub new {
@@ -21,7 +15,6 @@ sub new {
 
     my $filename = $self->{"filename"};
 
-    #say "new Page: $filename" if $self->{"DEBUG"};
     die "Must pass in filename of the page." if !$filename;
     Minerl::Util::parsePageFile($filename, $self);
    

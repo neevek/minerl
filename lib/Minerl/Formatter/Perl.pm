@@ -1,8 +1,5 @@
-use strict;
-use warnings;
-use 5.10.0;
-
 package Minerl::Formatter::Perl;
+{
 
 my $instance;
 
@@ -36,3 +33,4 @@ sub format {
 }
 
 1;
+}

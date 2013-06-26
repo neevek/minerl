@@ -1,10 +1,8 @@
-use strict;
-use warnings;
-use 5.10.0;
-
 package Minerl::Util;
+
 require Exporter;
 our @ISA = qw(Exporter);
+our @EXPORT = qw(parsePageFile);
 our @EXPORT_OK = qw(parsePageFile);
 
 use File::Basename;
@@ -39,23 +37,20 @@ sub parsePageFile {
             $state = PAGE_READ_CONTENT;
         }
 
-        given ($state) {
-            when (PAGE_READ_HEADER)  {
-                # strip leading white spaces
-                $line =~ s/^[ \t]+//g;
+        if ($state == PAGE_READ_HEADER) {
+            # strip leading white spaces
+            $line =~ s/^[ \t]+//g;
 
-                # skip comments
-                next if $line =~ /^#/;
+            # skip comments
+            next if $line =~ /^#/;
 
-                # strip trailing white spaces
-                $line =~ s/[ \t\n]+$//g;
-                my ($key, $value) = $line =~ '^([^:]+):[ \t]*(.*)$';
-                $hash->{"headers"}->{$key} = $value;
-            }
-            when (PAGE_READ_CONTENT) {
-                $content .= $line; 
-            }
-        } 
+            # strip trailing white spaces
+            $line =~ s/[ \t\n]+$//g;
+            my ($key, $value) = $line =~ '^([^:]+):[ \t]*(.*)$';
+            $hash->{"headers"}->{$key} = $value;
+        } elsif ($state == PAGE_READ_CONTENT) {
+            $content .= $line; 
+        }
     } 
 
     $hash->{"content"} = $content;
