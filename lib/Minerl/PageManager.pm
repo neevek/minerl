@@ -1,3 +1,39 @@
+=head1 NAME
+
+Minerl::PageManager - Manages all pages under C<page_dir>
+
+=head1 SYNOPSIS
+
+    use Minerl::PageManager;
+    my $pm = new Minerl::PageManager( page_dir => $pageDir, page_suffix_regex => $pageSuffixRegex); 
+    $pm->pages();
+    $pm->posts();
+    ...
+
+=head1 DESCRIPTION
+
+This class manages all the pages in C<page_dir>, it processes all
+the pages and prepares some of the builiin variables for template
+files, such as C<__post_title>, C<__post_link>, etc.
+
+=head1 AUTHOR
+
+neevek, C<< <i at neevek.net> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 neevek.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=head1 SUBROUTINES/METHODS
+
+=cut
+
 package Minerl::PageManager;
 
 our @ISA = qw(Minerl::BaseObject);
@@ -18,6 +54,14 @@ sub new {
    
     return $self;
 }
+
+=head2 _initPages
+
+Searches C<page_dir> for files that match C<page_suffix_regex>, appplies
+formatters on the content of the pages, prepares some builtin variables, 
+which will be made available to template files.
+
+=cut
 
 sub _initPages {
     my ($self, $pageDir, $pageSuffixRegex) = @_;
@@ -82,6 +126,7 @@ sub _initPages {
                     __post_excerpt => ${$page->content(150)},
                 };
 
+                # save these builtin variables in the context of the page
                 $page->ctxVars($post);
 
                 push @postArr, $post;
@@ -115,21 +160,13 @@ sub _initPages {
 
     @postArr = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @postArr;
     $self->{"posts"} = \@postArr;
-
-    #$self->_formatPages($pageArr);
 }
 
-#sub _formatPages {
-    #my ($self, $pageArr) = @_;
+=head2 _obtainFormatter
 
-    #foreach my $page (@$pageArr) {
-        #my $formats = $page->formats();
-        #map { 
-             #my $formatter = $self->_obtainFormatter($_);
-             #$page->applyFormatter($formatter) if $formatter 
-        #} @$formats if $formats;
-    #}
-#}
+Obtains a formatter with a name
+
+=cut
 
 sub _obtainFormatter {
     my ($self, $name) = @_;
@@ -146,10 +183,24 @@ sub _obtainFormatter {
     }
 }
 
+=head2 pages
+
+Gets all pages of any type(specified in the header section of the page)
+
+=cut
+
 sub pages {
     my ($self) = @_;
     return $self->{"pages"};
 }
+
+=head2 posts
+
+Gets an ARRAY of all or C<$limit> count of posts, each post is
+a HASH, the HASH contains builtin variables of the post, which 
+will be made available to template files.
+
+=cut
 
 sub posts {
     my ($self, $limit) = @_;
@@ -165,6 +216,13 @@ sub posts {
     }
 }
 
+=head2 tags
+
+Gets an ARRAY of tags from all posts, the ARRAY contains builtin
+variables of the page
+
+=cut
+
 sub tags {
     my ($self) = @_;
     my $taggedPosts = $self->{"tagged_posts"};
@@ -172,11 +230,23 @@ sub tags {
     return \@keys;
 }
 
+=head2 postsByTag
+
+Gets all posts of the specified tag
+
+=cut
+
 sub postsByTag {
     my ($self, $tag) = @_;
     my $taggedPosts = $self->{"tagged_posts"};
     return $taggedPosts ? $taggedPosts->{$tag} : undef;
 }
+
+=head2 postTgas
+
+Gets all tags of the posts
+
+=cut
 
 sub postTags {
     my ($self) = @_;
@@ -193,7 +263,12 @@ sub postTags {
     return \@postTags;
 }
 
-# months during which some blog entries were created
+=head2 months
+
+months during which some posts were created
+
+=cut
+
 sub months {
     my ($self) = @_;
     my $archivedPosts = $self->{"archived_posts"};
@@ -201,10 +276,23 @@ sub months {
     return \@keys;
 }
 
+=head2 monthLink
+
+    my $month = $self->monthLink("2013/06");
+    $month eq "Jun, 2013";
+
+=cut
+
 sub monthLink {
     my ($self, $month) = @_;
     return $self->{"archived_months"}->{$month};
 }
+
+=head2 postsByMonth
+
+Gets all posts created on the specified month
+
+=cut
 
 sub postsByMonth {
     my ($self, $month) = @_;
@@ -212,7 +300,12 @@ sub postsByMonth {
     return $archivedPosts ? $archivedPosts->{$month} : undef;
 }
 
-# months during which some blog entries were created
+=head2 postsMonths
+
+months during which some posts were created
+
+=cut
+
 sub postMonths {
     my ($self) = @_;
     my $archivedPosts = $self->{"archived_posts"};

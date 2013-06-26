@@ -2,8 +2,6 @@
 
 Minerl::Page - A Page encapsulates a file, either a page or a template 
 
-=cut
-
 =head1 SYNOPSIS
 
     use Minerl::Page;
@@ -32,8 +30,6 @@ copy of the full license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 
-=head1 METHODS
-
 =cut
 
 package Minerl::Page;
@@ -41,6 +37,8 @@ package Minerl::Page;
 our @ISA = qw(Minerl::BaseObject);
 
 use File::Basename;
+
+=head1 SUBROUTINES/METHODS
 
 =head2 new
 
