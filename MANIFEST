@@ -1,5 +1,13 @@
 Changes
 lib/minerl.pm
+lib/Minerl/BaseObject.pm
+lib/Minerl/Formatter/Markdown.pm
+lib/Minerl/Formatter/Perl.pm
+lib/Minerl/Page.pm
+lib/Minerl/PageManager.pm
+lib/Minerl/Template.pm
+lib/Minerl/TemplateManager.pm
+lib/Minerl/Util.pm
 Makefile.PL
 MANIFEST			This list of files
 README
