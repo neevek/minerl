@@ -8,7 +8,9 @@ lib/Minerl/PageManager.pm
 lib/Minerl/Template.pm
 lib/Minerl/TemplateManager.pm
 lib/Minerl/Util.pm
-Makefile.PL
+minerl.pl
+test-dependencies.pl
+Makefile
 MANIFEST			This list of files
 README
 t/00-load.t

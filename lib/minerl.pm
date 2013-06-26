@@ -100,10 +100,10 @@ sub _initConfigFile {
 
     $cfg{"system"} = {} if !$cfg{"system"};
     $cfg{"system"}->{"output_dir"} = "out" if !$cfg{"system"}->{"output_dir"};
-    $cfg{"system"}->{"raw_dir"} = "raw" if !$cfg{"system"}->{"raw_dir"};
-    $cfg{"system"}->{"page_dir"} = "pages" if !$cfg{"system"}->{"page_dir"};
+    $cfg{"system"}->{"raw_dir"} = "_raw" if !$cfg{"system"}->{"raw_dir"};
+    $cfg{"system"}->{"page_dir"} = "_pages" if !$cfg{"system"}->{"page_dir"};
     $cfg{"system"}->{"page_suffix_regex"} = "\\.(?:md|markdown|html)\$" if !$cfg{"system"}->{"page_suffix_regex"};
-    $cfg{"system"}->{"template_dir"} = "templates" if !$cfg{"system"}->{"template_dir"};
+    $cfg{"system"}->{"template_dir"} = "_templates" if !$cfg{"system"}->{"template_dir"};
     $cfg{"system"}->{"template_suffix"} = ".html" if !$cfg{"system"}->{"template_suffix"};
     $cfg{"system"}->{"recent_posts_limit"} = 5 if !$cfg{"system"}->{"recent_posts_limit"};
 
