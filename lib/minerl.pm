@@ -81,8 +81,8 @@ use File::Basename qw(dirname);
 
 =head2 new 
 
-The constructor, which initializes configurations based on the configuration
-file passed in as an arguement, usually C<minerl.cfg>
+The constructor, which calls C<$self->_initConfigFile()> to read configurations
+from the cfg file, usually C<minerl.cfg>
 
 =cut
 
@@ -142,6 +142,7 @@ sub _generatePages {
     my $templateDir = $cfg->{"system"}->{"template_dir"};
     -d $templateDir or die "$templateDir does not exist.";
 
+    # ensures the output_dir exists
     my $outputDir = $cfg->{"system"}->{"output_dir"};
     make_path($outputDir, { mode => 0755 });
 
@@ -151,17 +152,22 @@ sub _generatePages {
     my $tm = new Minerl::TemplateManager(template_dir => $templateDir, template_suffix => $templateSuffix);
     my $pm = new Minerl::PageManager( page_dir => $pageDir, page_suffix_regex => $pageSuffixRegex); 
 
+    # gets all the tags
     my $postTags = $pm->postTags();
+    # gets all the archive months
     my $postMonths = $pm->postMonths();
 
+    # gets all the pages
     my $pages = $pm->pages();
     foreach my $page (@$pages) {
         print "processing page: $page->{filename}\n" if $verbose;
 
         my $type = $page->header("type");
-        if ($type && $type eq "taglist") {
+        if ($type && $type eq "taglist") { # if the page type is 'taglist', we loop through all the tags to generate page for each tag
             my $tags = $pm->tags();
             foreach my $tag (@$tags) {
+
+                # gets all posts with the specified tag
                 my $postsByTag = $pm->postsByTag($tag); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
@@ -175,9 +181,11 @@ sub _generatePages {
 
                 print "  generated tag page: $destFile\n" if $verbose;
             } 
-        } elsif ($type && $type eq "archive") {
+        } elsif ($type && $type eq "archive") { # if the page type is 'archive', we loop through all the archive months to generate page for each archive month 
             my $months = $pm->months();
             foreach my $month (@$months) {
+
+                # gets all posts posted on the specified month
                 my $postsByMonth = $pm->postsByMonth($month); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
@@ -191,10 +199,13 @@ sub _generatePages {
 
                 print "  generated archive page: $destFile\n" if $verbose;
             } 
-        } else {
+        } else { # when the 'type' is not specified or is 'post', we treat it as normal page
             my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, $page->ctxVars,
                     , { __minerl_all_posts => $pm->posts(), __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
                     , "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
+
+            # outputFilename is affected by the title or the slug of the page specified at the header section
+            # it has nothing to do with what filename is used for the source page
             my $destFile = "$outputDir/" . $page->outputFilename();
             $self->_writePageFile($outputDir, $destFile, $html);
 
@@ -244,7 +255,7 @@ sub _copyRawResources {
             make_path ("$outputDir/" . $_, { mode => 0755 });
         } elsif ( -f $_ ) {
             my $srcFile = $_;
-            s|$rawDir|$outputDir|;
+            s|$rawDir|$outputDir|; # replace 'raw_dir' with 'output_dir'
             copy ($srcFile, $_);
             
             print "  copied $srcFile to $_\n" if $verbose;

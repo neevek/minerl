@@ -1,3 +1,36 @@
+=head1 NAME
+
+Minerl::TemplateManager - Manages all templates of the site
+
+=head1 SYNOPSIS
+
+    use Minerl::Template;
+    my $tm = new Minerl::TemplateManager(template_dir => $templateDir, template_suffix => $templateSuffix);
+    my $html = $tm->applyTemplate("layout_name", "...content..." , [ {options1}, {options2}, ... ] );
+    ...
+
+=head1 DESCRIPTION
+
+This class reads all files with C<tempalte_suffix> under C<template_dir> as templates, 
+these templates can be applied on the pages to generate rendered HTML pages.
+
+=head1 AUTHOR
+
+neevek, C<< <i at neevek.net> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 neevek.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=head1 SUBROUTINES/METHODS
+
+=cut
 package Minerl::TemplateManager;
 
 our @ISA = qw(Minerl::BaseObject);
@@ -33,10 +66,16 @@ sub _initTemplates {
     }
     
     while (my ($tmplName, $tmpl) = each %$tmplHashes) {
-        next if $tmpl->built();
         $tmpl->build();
     }
 }
+
+=head2
+
+Applies the templates recursively on the content. that we need recursion is because
+templates(or layouts) can be inherited/extended.
+
+=cut
 
 sub applyTemplate {
     my ($self, $tmplName, $content, $options) = @_;
@@ -62,7 +101,7 @@ sub _applyTemplateRecursively {
 
 sub _prettyPrintAvailable {
     my ($self) = @_;
-    return 0;
+    return 0;   # pretty print is not used currently, because it is slow
 
     my $useStr = "
         use HTML::HTML5::Parser qw();

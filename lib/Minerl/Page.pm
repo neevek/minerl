@@ -148,8 +148,7 @@ sub outputFilename {
 
     $outputFilename = $self->{"filename"};
 
-    # strip the first dirname, which is the root directory of
-    # the page
+    # strip the first dirname, which is the root directory(raw_dir) of the page
     $outputFilename =~ s|^[^/]*/||g;    
 
     my $dir = dirname($outputFilename);
@@ -170,7 +169,7 @@ sub outputFilename {
         $outputFilename = lc $self->header("title");
         die "Post does not contain a title header: " . $self->{"filename"} if !$outputFilename;
 
-        $outputFilename =~ s/[^a-z]/ /g;
+        $outputFilename =~ s/[^a-z]/ /ig;         # replace all non-A-to-Z characters with whitespace
         $outputFilename =~ s/^[ \t]+//g;         # trim left
         $outputFilename =~ s/[ \t]+$//g;         # trim right
         $outputFilename =~ s/[ \t]+/-/g;         # replace all whitespaces with dashes

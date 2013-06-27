@@ -1,3 +1,35 @@
+=head1 NAME
+
+Minerl::Util - Utility class
+
+=head1 SYNOPSIS
+
+    use Minerl::Util;
+    my %hash;
+    Minerl::Util::parsePageFile($filename, \%hash);
+    ...
+
+=head1 DESCRIPTION
+
+This class includes some utility routines
+
+=head1 AUTHOR
+
+neevek, C<< <i at neevek.net> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 neevek.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=head1 SUBROUTINES/METHODS
+
+=cut
 package Minerl::Util;
 
 require Exporter;
@@ -13,8 +45,12 @@ use constant {
     PAGE_READ_CONTENT => 3 
 };
 
-# this subroutine parses file that is composed of a 
-# header section and content section
+=head2 
+
+this subroutine parses file that is composed of a header section and content section
+
+=cut
+
 sub parsePageFile {
     my ($filename, $hash) = @_;
 

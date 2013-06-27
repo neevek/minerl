@@ -88,22 +88,25 @@ sub _initPages {
             my ($name) = basename($_) =~ /([^.]+)/;
             my $page = new Minerl::Page( filename => $_, name => $name );
 
+            die "$_: 'layout' header is not specified." if !$page->header("layout");
+
+            # applies formatters on all pages
             my $formats = $page->formats();
             map { 
                 my $formatter = $self->_obtainFormatter($_);
                 $page->applyFormatter($formatter) if $formatter 
             } @$formats if $formats;
 
-            die "$_: 'layout' header is not specified." if !$page->header("layout");
-
             push @$pageArr, $page;
 
             my $pageType = $page->header("type");
-            if ($pageType && $pageType eq "post") {
 
+            # only for pages of 'post' type do we need to extract some properties
+            if ($pageType && $pageType eq "post") {
                 my @postTags;
 
                 my @tags;
+                # if any tags were specified, extract them and put them in the array  
                 if ($page->header("tags")) {
                     @tags = split /[ \t]*,[ \t]*/, $page->header("tags");
                     @tags = grep { $_ } @tags;
@@ -113,8 +116,10 @@ sub _initPages {
                     }
                 }
 
+                # generates the create timestamp for the page if it is absent in the header 
                 $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
 
+                # setup builtin variables
                 my $post= {
                     __post_timestamp => $page->header("timestamp"),   # this is for sorting
                     __post_title => $page->header("title"),
@@ -144,6 +149,7 @@ sub _initPages {
                     }
                 }
 
+                # group the posts by month
                 my $monthAsKey = POSIX::strftime("%b, %Y", localtime($page->header("timestamp")));
                 $archivedMonths->{$monthAsKey} = POSIX::strftime("%Y/%m", localtime($page->header("timestamp")));
                 my $postsByMonth = $archivedPosts->{$monthAsKey};
@@ -158,6 +164,7 @@ sub _initPages {
         }
     }, no_chdir => 1 }, ($pageDir) ); 
 
+    # sort the posts by createtime
     @postArr = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @postArr;
     $self->{"posts"} = \@postArr;
 }

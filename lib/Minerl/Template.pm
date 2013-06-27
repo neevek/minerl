@@ -1,3 +1,35 @@
+=head1 NAME
+
+Minerl::Template - A class that encapsulates C<HTML::Template>
+
+=head1 SYNOPSIS
+    
+    use Minerl::Template;
+    my $tmpl = new Minerl::Template( filename => $filename, name => $name );
+    $content = $tmpl->apply($content, $options);
+    ...
+
+=head1 DESCRIPTION
+
+This class encapsulates C<HTML::Template>, and uses C<HTML::Template> to expand variables set
+in the templates and pages.
+
+=head1 AUTHOR
+
+neevek, C<< <i at neevek.net> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2013 neevek.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=cut
+
 package Minerl::Template;
 
 use HTML::Template;
