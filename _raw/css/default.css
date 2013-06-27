@@ -3,7 +3,7 @@ html, body {
     padding:0;
     height:100%;
 
-    font-family: serif;
+    font-family: Georgia, serif;
     background: #000;
     color: #000;
 }
@@ -39,7 +39,6 @@ h1, h2, h3, h4, h5 {
 
 #header #nav li {
     float: left;
-    font-family: Arial;
     font-size: 14px;
     list-style: none;
     margin-top: 24px;
@@ -70,21 +69,23 @@ h1, h2, h3, h4, h5 {
     padding: 14px;
     box-sizing:border-box;
 
-    font-family: Georgia, sans-serif;
     font-size: 13px;
     text-align: left;
 }
 
 #content {
     display: inline-block; 
-    width: 480px;
+    width: 490px;
+    font-size: 15px;
+    padding-left: 12px;
+    line-height: 22px;
 }   
 
 #sidebar {
     display: inline-block;
-    width: 252px;
+    width: 242px;
     vertical-align: top;
-    padding: 6px 6px 0px 24px;
+    padding: 6px 6px 0px 14px;
 }
 
 #sidebar ul {
@@ -93,7 +94,6 @@ h1, h2, h3, h4, h5 {
 }
 
 #sidebar li {
-    font-family: Arial;
     font-size: 14px;
     margin-bottom: 6px;
     list-style: none
@@ -106,6 +106,7 @@ code {
     background: #f3f3f3;
     border: 1px #ccc solid;
     padding: 1px 2px;
+    margin: 4px 2px;
 }
 pre code {
     font-family: Courier;
@@ -117,15 +118,14 @@ pre code {
 }
 
 .title {
-    font-family: Georgia, serif;
     border-bottom: #eee 1px solid;
     margin: 0px;
     padding-bottom: 10px;
     font-size: 28px;
+    line-height: 30px;
 }
 
 .postmeta{
-    font-family: Arial;
     font-size: 12px;
     padding: 3px 3px 0px 3px;
 }
@@ -146,16 +146,11 @@ pre code {
 }
 
 .author {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
-    font-family: Georgia, serif;
 }
 
 .postcontent {
-    font-family: Times;
-    padding: 8px;
-    font-size: 16px;
-    line-height: 20px;
 }
 
 A:link {
