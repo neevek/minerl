@@ -107,9 +107,11 @@ For a normal page, the `type`, `tags` and `timestamp` headers are not needed. `s
 
 - `__minerl_all_posts`          - ARRAY, used in LOOP, available in all templates
 - `__minerl_recent_posts`       - ARRAY, used in LOOP, available in all templates
-- `__minerl_archived_posts`     - ARRAY, used in LOOP, available in all templates
 - `__minerl_archived_months`    - ARRAY, used in LOOP, available in all templates
+- `__minerl_archived_posts`     - ARRAY, used in LOOP, available in templates applied on pages of type `archive` 
 - `__minerl_cur_month`          - string SCALAR, available in templates applied on pages of type `archive` 
+- `__minerl_all_tags`           - ARRAY, used in LOOP, available in all templates
+- `__minerl_tagged_posts`       - ARRAY, used in LOOP, available in templates applied on pages of type `taglist` 
 - `__minerl_cur_tag`            - string SCALAR, available in templates applied on pages of type `taglist` 
 
 The following builtin variables(string SCALAR) are only available in templates applied on pages of type `post`:
@@ -124,6 +126,30 @@ The following builtin variables(string SCALAR) are only available in templates a
 - `__post_exerpt`
 
 Besides the above variables, all user defined variables in page headers are available to all templates. 
+
+### Examples
+
+The following code use the `__minerl_all_posts` variable to list all posts of the site:
+
+    <ul>
+        <TMPL_LOOP __minerl_all_posts>
+            <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a></li>
+            <div class="post_content">
+                <TMPL_VAR __post_excerpt>... 
+            </div>
+        </TMPL_LOOP>
+    </ul>
+
+The following code use the `__minerl_tagged_posts` variable to list all posts of a certain tag:
+
+    <ul>
+        <TMPL_LOOP __minerl_tagged_posts>
+            <li><a href="<TMPL_VAR __post_link>"><TMPL_VAR __post_title></a></li>
+            <div class="post_content">
+                <TMPL_VAR __post_excerpt>... 
+            </div>
+        </TMPL_LOOP>
+    </ul>
 
 ## Formats
 
