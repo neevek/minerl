@@ -3,10 +3,6 @@ use warnings;
 
 sub testDependencies {
     my @dependencies = qw(
-        File::Path
-        File::Copy
-        File::Basename
-        File::Find
         Config::IniFiles
         HTML::Template
         Text::Template

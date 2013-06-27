@@ -3,14 +3,13 @@ html, body {
     padding:0;
     height:100%;
 
-    font-family: Georgia, serif;
     background: #000;
     color: #000;
 }
 
 h1, h2, h3, h4, h5 {
-    margin: 0px;
-    margin-bottom: 4px;
+    margin: 8px 0px;
+    font-family: Georgia, serif;
 }
 
 #container {
@@ -71,29 +70,32 @@ h1, h2, h3, h4, h5 {
 
     font-size: 13px;
     text-align: left;
+    font-family: Georgia, serif;
 }
 
 #content {
     display: inline-block; 
     width: 490px;
-    font-size: 15px;
+    font-size: 14px;
     padding-left: 12px;
     line-height: 22px;
+    font-family: tahoma;
 }   
 
 #sidebar {
     display: inline-block;
     width: 242px;
     vertical-align: top;
-    padding: 6px 6px 0px 14px;
+    padding: 0px 6px 0px 14px;
 }
 
 #sidebar ul {
     margin: 0px;
-    padding: 0px 0px 0px 16px;
+    padding: 0px 0px 0px 10px;
 }
 
 #sidebar li {
+    font-family: Georgia, serif;
     font-size: 14px;
     margin-bottom: 6px;
     list-style: none
@@ -101,20 +103,27 @@ h1, h2, h3, h4, h5 {
 
 code {
     font-family: Courier;
-    font-size: 14px;
+    font-size: 13px;
     display: inline;
     background: #f3f3f3;
-    border: 1px #ccc solid;
-    padding: 1px 2px;
+    border: 1px #cfcfcf solid;
+    padding: 0px 3px;
     margin: 4px 2px;
 }
 pre code {
     font-family: Courier;
-    font-size: 14px;
+    font-size: 13px;
     display: block;
     background: #f3f3f3;
-    border: 1px #ccc solid;
+    border: 1px #cfcfcf solid;
     padding: 6px;
+
+    overflow-y: hidden !important; 
+    overflow-x: auto !important; 
+}
+
+blockquote {
+    font-style: italic;
 }
 
 .title {
@@ -126,8 +135,9 @@ pre code {
 }
 
 .postmeta{
-    font-size: 12px;
+    font-size: 13px;
     padding: 3px 3px 0px 3px;
+    font-family: Georgia, serif;
 }
 
 .postmeta_text {

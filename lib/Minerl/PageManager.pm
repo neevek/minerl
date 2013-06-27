@@ -128,7 +128,7 @@ sub _initPages {
                     __post_createtime => POSIX::strftime("%I:%M %p", localtime($page->header("timestamp"))),
                     __post_tags => \@postTags,
                     __post_content => ${$page->content()},
-                    __post_excerpt => ${$page->content(150)},
+                    __post_excerpt => ${$page->content(300)},
                 };
 
                 # save these builtin variables in the context of the page

@@ -1,8 +1,8 @@
 ---
-title: About - neevek's blog
+title: About - neevek's cozy place 
 slug: about.html 
 layout: index 
 format: markdown
 ---
 
-This is **Minerl**.
+Hey, this is [@neevek](http://webbo.com/neevek).
