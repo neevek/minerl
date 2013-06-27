@@ -1,0 +1,216 @@
+<!DOCTYPE HTML >
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>Introduction to Minerl</title>
+        <link href='http://fonts.googleapis.com/css?family=EB+Garamond|Nothing+You+Could+Do|Titillium+Web' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="/css/default.css" type="text/css" media="screen" charset="utf-8">
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="header">
+                <div id="nav">
+                    <ul>
+                        <li><a href="/index.html">HOME</a></li>
+                        <li><a href="/all-posts.html">POSTS</a></li>
+                        <li><a href="/about.html">ABOUT</a></li>
+                    </ul>
+                </div>
+                <div id="sig">
+                    driven by thirst for knowledge.
+                </div>
+            </div>
+
+            <div id="body">
+                <div id="content">
+    <h2 class="title">Introduction to Minerl</h2>
+
+    <div class="postmeta">
+        <span class="postmeta_text">Posted on</span> <span class="createdate"><a href="#" title="07:35 PM">Jun 27, 2013</a></span> by <span class="author">neevek</span>&nbsp;&nbsp;&nbsp;&nbsp; <span class="postmeta_text">Tags:</span>
+        
+        <span class="postmeta_tags"><a href="/tags/minerl.html">minerl</a></span>, 
+        
+        <span class="postmeta_tags"><a href="/tags/perl.html">perl</a></span>
+        
+
+    </div>
+
+    <div class="postcontent">
+        <h2 id="introduction">Introduction</h2>
+
+<p><strong>Minerl</strong> is a blog-aware static site generator written in Perl, it supports <em>tagging</em>, <em>automatic archiving</em>, <em>post</em>, <em>page</em>, <em>layout inheritance</em>.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Before installation, make sure you have all modules required by <strong>Minerl</strong> installed, <strong>Minerl</strong> depends on the following modules:</p>
+
+<pre><code>Config::IniFiles
+HTML::Template
+Text::Template
+Text::MultiMarkdown
+Getopt::Compact::WithCmd
+HTTP::Server::Brick
+</code></pre>
+
+<p>I recommend <a href="https://raw.github.com/miyagawa/cpanminus/master/cpanm">cpanm</a> for installing modules.</p>
+
+<pre><code>curl -o cpanm https://raw.github.com/miyagawa/cpanminus/master/cpanm
+chmod +x cpanm
+</code></pre>
+
+<p>After cpanm is installed, use the following command to install all required modules, note you may need root permission if your Perl modules are installed in system directory:</p>
+
+<pre><code>cpanm Config::IniFiles HTML::Template Text::Template \
+    Text::MultiMarkdown Getopt::Compact::WithCmd HTTP::Server::Brick
+</code></pre>
+
+<p>Okay, all prerequisites are met, we are ready to install and try out <strong>Minerl</strong>. It is that straightforward, simply clone the code from github, change direcotry to the root of the project, <code>make &amp;&amp; make install</code> installs the <strong>minerl</strong> script under <code>/usr/local/bin</code>:</p>
+
+<pre><code>git clone https://github.com/neevek/minerl.git
+cd minerl
+make &amp;&amp; make install
+</code></pre>
+
+<p>Now generate your first minerl site:</p>
+
+<pre><code>minerl genearte -d mysite
+cd mysite
+minerl build -v
+minerl serve
+</code></pre>
+
+<p>You may have already seen the output of the commands, navigate your browser to <code>http://127.0.0.1:8888</code>. Cool! You have just created the first page of your minerl site.</p>
+
+<h2 id="implementedcommands">Implemented Commands</h2>
+
+<pre><code>minerl v0.01
+usage: minerl [options] COMMAND
+
+options:
+   -h, --help      This help message
+
+Implemented commands are:
+   build        - Applies the templates on the pages, generates the final HTML pages                               
+   createpost   - Creates the skeleton of a new post                                                               
+   generate     - Creates a brand new Minerl site                                                                  
+   serve        - Starts an HTTP server to serve the directory specified by the 'output_dir' property in minerl.cfg
+
+See 'minerl help COMMAND' for more information on a specific command.
+</code></pre>
+
+<p>Currently 4 commands are implemented, for more information, run <code>minerl help COMMAND</code>.</p>
+
+<h2 id="whatcanminerldoforyou">What can Minerl do for you</h2>
+
+<p>Now that you have installed <strong>minerl</strong>, you may want to know more about it, and see what it can do for you. In the begining I mentioned that <strong>Minerl</strong> supports <em>tagging</em> and <em>automatic archiving</em>, which sounds unclear, what is that? </p>
+
+<p><strong>tagging</strong> per se is not interesting at all, the fun part is that after you tag your blog posts, <strong>Minerl</strong> will organize all your posts and group them by tags, so that you can create index pages listing posts for each tag, which is cool for a pure static site. <strong>automatic archiving</strong> works in the same way, it organizes all your posts and group them by months, you can create index pages for all months as you would for tags. <strong>automatic archiving</strong> requires the <em>timestamp</em> header in every post to work. I recommend you always use <code>minerl createpost</code> to create the skeleton of a new post, which sets the <em>timestamp</em> as well as a few other headers for you.</p>
+
+<p>Note: when I am talking about <strong>posts</strong>, I mean pages of type <strong>post</strong>, which is set in the header section.</p>
+
+<h2 id="templates">Templates</h2>
+
+<p>A template file is composed of a header section and a content/body section, header section starts and ends with 3 or more dashes. Minerl uses <code>HTML::Template</code> to expand variables in template files, template files can be inherited, which makes HTML structure design a lot easier even if you have many pages. A template inherits another by specifying the <code>layout</code> header and name the inherited template without suffix, like this:</p>
+
+<pre><code>---
+layout: default
+---
+</code></pre>
+
+<h3 id="caveats">Caveats</h3>
+
+<ul>
+<li>When a template is designed to be inherited(like <code>default.html</code> in the demo created by <code>minerl generate</code>), it MUST contain a variable called <code>content</code>, like this: <code>&lt;TMPL_VAR content&gt;</code>.</li>
+</ul>
+
+<h2 id="pages">Pages</h2>
+
+<p>Format of pages are the same as that of template files, a header section and a content/body section, the only difference is that you may always need to set more headers for pages. Let's take an example of this post, which contains the following headers:</p>
+
+<ul>
+<li>title: Introduction to Minerl</li>
+<li>layout: post</li>
+<li>format: markdown</li>
+<li>type: post</li>
+<li>tags: minerl, perl</li>
+<li>slug: introduction-to-minerl.html</li>
+<li>timestamp: 1372332934</li>
+</ul>
+
+<p>For a normal page, the <code>type</code>, <code>tags</code> and <code>timestamp</code> headers are not needed. <code>slug</code> is used as the final output file name of the page, if it is absent, <code>title</code> will be used instead with whitespaces replaced with dahses.</p>
+
+<h2 id="builtinvariables">Builtin variables</h2>
+
+<p><strong>Minerl</strong> offers quite a few builtin variables that can be used to generate index pages of tags and archives. Builtin variables can be referenced in templates with <a href="http://search.cpan.org/~wonko/HTML-Template-2.94/lib/HTML/Template.pm">HTML::Template</a> syntax.</p>
+
+<p><strong>Minerl</strong> offers the following variables:</p>
+
+<ul>
+<li><code>__minerl_all_posts</code>          - ARRAY, used in LOOP, available in all templates</li>
+<li><code>__minerl_recent_posts</code>       - ARRAY, used in LOOP, available in all templates</li>
+<li><code>__minerl_archived_posts</code>     - ARRAY, used in LOOP, available in all templates</li>
+<li><code>__minerl_archived_months</code>    - ARRAY, used in LOOP, available in all templates</li>
+<li><code>__minerl_cur_month</code>          - string SCALAR, available in templates applied on pages of type <code>archive</code> </li>
+<li><code>__minerl_cur_tag</code>            - string SCALAR, available in templates applied on pages of type <code>taglist</code> </li>
+</ul>
+
+<p>The following builtin variables(string SCALAR) are only available in templates applied on pages of type <code>post</code>:</p>
+
+<ul>
+<li><code>__post_timestamp</code></li>
+<li><code>__post_title</code></li>
+<li><code>__post_link</code></li>
+<li><code>__post_createdate</code></li>
+<li><code>__post_createtime</code></li>
+<li><code>__post_tags</code></li>
+<li><code>__post_content</code></li>
+<li><code>__post_exerpt</code></li>
+</ul>
+
+<p>Besides the above variables, all user defined variables in page headers are available to all templates. </p>
+
+<h2 id="formats">Formats</h2>
+
+<p>Currently <strong>Minerl</strong> supports <a href="http://search.cpan.org/~bobtfish/Text-MultiMarkdown-1.000034/lib/Text/MultiMarkdown.pm">markdown</a> and Perl script, you can write your pages using markdown, like the one I am writing and embed some perl scripts in the page.</p>
+
+<p>Okay, that is almost all about the first release of <strong>Minerl</strong>. Enjoy!</p>
+
+<p>For more information, please run <code>minerl -h</code>.</p>
+
+    </div>
+</div>
+<div id="sidebar">
+                    <h3>Posts</h3>
+                    <ul>
+                        
+                        <li><a href="/2013/06/27/introduction-to-minerl.html">Introduction to Minerl</a> - <span class="createdate">Jun 27, 2013</span></li>
+                        
+                    </ul>
+
+                    <h3>Tags</h3>
+                    <ul>
+                        
+                        <li><a href="/tags/minerl.html">minerl (1)</a></li>
+                        
+                        <li><a href="/tags/perl.html">perl (1)</a></li>
+                        
+                    </ul>
+
+                    <h3>Archives</h3>
+                    <ul>
+                        
+                        <li><a href="/archives/2013/06.html">Jun, 2013 (1)</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <div id="footer">
+                Pages of this site are generated by <strong><em>Minerl</em></strong> <br/> 
+                <a href="http://github.com/neevek">http://github.com/neevek</a><br />
+                <a href="http://weibo.com/neevek">@neevek</a> 
+            </div>
+        </div>
+    </body>
+</html>
