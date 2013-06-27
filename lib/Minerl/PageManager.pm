@@ -186,7 +186,7 @@ sub _obtainFormatter {
     if (defined $formatterHash->{$name}) {
         return $formatterHash->{$name};
     } else {
-        warn "formatter not supported: $name"
+        warn "formatter not supported: $name" unless $name eq 'html';
     }
 }
 

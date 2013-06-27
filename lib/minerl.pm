@@ -111,7 +111,11 @@ sub _initConfigFile {
     tie my %cfg, 'Config::IniFiles', ( -file => $cfgFile );
 
     $cfg{"system"} = {} if !$cfg{"system"};
-    $cfg{"system"}->{"output_dir"} = "out" if !$cfg{"system"}->{"output_dir"};
+    foreach my $k (keys %{$cfg{"system"}}) {
+        $cfg{"system"}->{$k} =~ s/[\t\s]+$//;  
+    }
+
+    $cfg{"system"}->{"output_dir"} = "site" if !$cfg{"system"}->{"output_dir"};
     $cfg{"system"}->{"raw_dir"} = "_raw" if !$cfg{"system"}->{"raw_dir"};
     $cfg{"system"}->{"page_dir"} = "_pages" if !$cfg{"system"}->{"page_dir"};
     $cfg{"system"}->{"page_suffix_regex"} = "\\.(?:md|markdown|html)\$" if !$cfg{"system"}->{"page_suffix_regex"};
@@ -120,6 +124,9 @@ sub _initConfigFile {
     $cfg{"system"}->{"recent_posts_limit"} = 5 if !$cfg{"system"}->{"recent_posts_limit"};
 
     $cfg{"template"} = {} if !$cfg{"template"};
+    foreach my $k (keys %{$cfg{"template"}}) {
+        $cfg{"template"}->{$k} =~ s/[\t\s]+$//;  
+    }
 
     $self->{"cfg"} = \%cfg;
 }
@@ -144,6 +151,8 @@ sub _generatePages {
 
     # ensures the output_dir exists
     my $outputDir = $cfg->{"system"}->{"output_dir"};
+    $outputDir =~ s/^[ \t]+//;
+    $outputDir =~ s/[ \t]+$//;
     make_path($outputDir, { mode => 0755 });
 
     my $templateSuffix = $cfg->{"system"}->{"template_suffix"};
