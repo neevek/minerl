@@ -9,7 +9,7 @@ timestamp: 1372332934
 
 ## Introduction
 
-**Minerl** is a blog-aware static site generator written in Perl, it supports *tagging*, *automatic archiving*, *post*, *page*, *layout inheritance*.
+[Minerl](https://github.com/neevek/minerl) is a blog-aware static site generator written in Perl, it supports *tagging*, *automatic archiving*, *post*, *page*, *layout inheritance*.
 
 ## Installation
 
@@ -129,7 +129,7 @@ Besides the above variables, all user defined variables in page headers are avai
 
 ### Examples
 
-The following code use the `__minerl_all_posts` variable to list all posts of the site:
+The following code uses the `__minerl_all_posts` variable to list all posts of the site:
 
     <ul>
         <TMPL_LOOP __minerl_all_posts>
@@ -140,7 +140,7 @@ The following code use the `__minerl_all_posts` variable to list all posts of th
         </TMPL_LOOP>
     </ul>
 
-The following code use the `__minerl_tagged_posts` variable to list all posts of a certain tag:
+The following code uses the `__minerl_tagged_posts` variable to list all posts of a certain tag:
 
     <ul>
         <TMPL_LOOP __minerl_tagged_posts>
