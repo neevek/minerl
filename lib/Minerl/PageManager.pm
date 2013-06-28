@@ -149,6 +149,11 @@ sub _initPages {
                     }
                 }
 
+                # sort in-pace the posts
+                while (my ($tag, $postArrRef) = each %$taggedPosts) {
+                    @$postArrRef = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @$postArrRef;                      
+                }
+
                 # group the posts by month
                 my $monthAsKey = POSIX::strftime("%b, %Y", localtime($page->header("timestamp")));
                 $archivedMonths->{$monthAsKey} = POSIX::strftime("%Y/%m", localtime($page->header("timestamp")));
@@ -160,6 +165,10 @@ sub _initPages {
                     push @$postsByMonth, $post;
                 }
 
+                # sort in-pace the posts
+                while (my ($month, $postArrRef) = each %$archivedPosts) {
+                    @$postArrRef = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @$postArrRef;                      
+                }
             }
         }
     }, no_chdir => 1 }, ($pageDir) ); 
