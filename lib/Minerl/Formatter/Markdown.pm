@@ -54,7 +54,7 @@ sub new {
         $markdownInstance = Text::MultiMarkdown->new(
             empty_element_suffix => '>',
             tab_width => 4,
-            use_wikilinks => 1,
+            use_wikilinks => 0,
         ) if !$@;
     }
 
