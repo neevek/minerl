@@ -18,7 +18,7 @@ my $go = Getopt::Compact::WithCmd->new(
             other_usage    => ""
         },  
        "serve" => {
-            options        => [[[qw(p port)], qq(The port which the HTTP server listens on), "=i", undef, { required => 1, default => 8888 }]],
+            options        => [[[qw(p port)], qq(The port which the HTTP server listens on), "=i", undef, { default => 8888 }]],
             args           => "[-p port]",
             desc           => "- Starts an HTTP server to serve the directory specified by the 'output_dir' property in minerl.cfg",
             other_usage    => ""
@@ -26,19 +26,20 @@ my $go = Getopt::Compact::WithCmd->new(
        "createpost" => {
             options        => [[[qw(f filename)], qq(File name of the page), "=s", undef, { required => 1 }],
                                [[qw(l layout)], qq(Layout on which the newly created page is to be applied), "=s", undef, { required => 1 }],
-                               [[qw(m format)], qq(Format of the page, currently supports 'html, markdown, perl'), ":s", undef, { required => 1, default => "html, markdown, perl" }],
-                               [[qw(g tags)], qq(Tags for the post, separated by commas), ":s", undef, { required => 1, default => "uncategorized" }],
-                               [[qw(t title)], qq(Title of the post), ":s", undef, { required => 1, default => "untitled" }],
+                               [[qw(m format)], qq(Format of the page, currently supports 'html, markdown, perl'), ":s", undef, { default => "html" }],
+                               [[qw(g tags)], qq(Tags for the post, separated by commas), ":s", undef, { default => "uncategorized" }],
+                               [[qw(t title)], qq(Title of the post), ":s", undef, { default => "untitled" }],
+                               [[qw(d subdir)], qq(The subdir to put the newly created post), ":s", undef, { default => "" }],
                                 ],
             args           => "<-f filename> <-l layout> [-m format] [-g tags] [-t title]",
             desc           => "- Creates the skeleton of a new post",
-            other_usage    => ""
+            other_usage    => "Example:\n\tminerl createpost -f my-first-post-of-the-day.md -l post -m markdown -g \"perl, minerl\" -d posts -t \"Hello World\"\n\n\n\tIf the -d or --subdir option is absent, the newly created post is put directly under 'page_dir' set in minerl.cfg",
         },  
        "generate" => {
             options        => [[[qw(d dirname)], qq(The directory name to the site to be created), "=s", undef, { required => 1 }]],
             args           => "<-n dirname>",
             desc           => "- Creates a brand new Minerl site",
-            other_usage    => ""
+            other_usage    => "Example:\n\tminerl generate -d mysite"
         },  
     },
     name => "minerl"
@@ -84,6 +85,7 @@ if ($command eq 'build') {
     my $format = $opts->{"format"};
     my $tags = $opts->{"tags"};
     my $title = $opts->{"title"};
+    my $subdir = $opts->{"subdir"};
 
     my $headers = "---\n"
     . "title: $title\n"
@@ -94,12 +96,11 @@ if ($command eq 'build') {
     . "timestamp: $timestamp\n"
     . "---\n\n";
 
-    my $pageDir = $minerl->{"cfg"}->{"system"}->{"page_dir"};
-    my $pageSubDir = $date;
-    $pageSubDir =~ s|-|/|g;
-    make_path("$pageDir/$pageSubDir", { mode => 0755 });
+    my $pageDir = $minerl->{"cfg"}->{"system"}->{"page_dir"} . "/$subdir/$date";
+    $pageDir =~ s,-|/+,/,g;
+    make_path($pageDir, { mode => 0755 });
 
-    my $finalFilePath = "$pageDir/$pageSubDir/$filename";
+    my $finalFilePath = "$pageDir/$filename";
 
     if (-f $finalFilePath) {
         print "$finalFilePath exists, override it? <y/n>\n";
