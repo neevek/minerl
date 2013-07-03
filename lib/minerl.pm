@@ -105,30 +105,30 @@ and setup defaults for properties that are absent in the configuration file
 sub _initConfigFile {
     my ($self) = @_;
 
-    my $cfgFile = $self->{"cfg_file"};
+    my $cfgFile = $self->{cfg_file};
     -f $cfgFile or die "$cfgFile not found.";
 
     tie my %cfg, 'Config::IniFiles', ( -file => $cfgFile );
 
-    $cfg{"system"} = {} if !$cfg{"system"};
-    foreach my $k (keys %{$cfg{"system"}}) {
-        $cfg{"system"}->{$k} =~ s/[\t\s]+$//;  
+    $cfg{system} = {} if !$cfg{system};
+    foreach my $k (keys %{$cfg{system}}) {
+        $cfg{system}->{$k} =~ s/[\t\s]+$//;  
     }
 
-    $cfg{"system"}->{"output_dir"} = "site" if !$cfg{"system"}->{"output_dir"};
-    $cfg{"system"}->{"raw_dir"} = "_raw" if !$cfg{"system"}->{"raw_dir"};
-    $cfg{"system"}->{"page_dir"} = "_pages" if !$cfg{"system"}->{"page_dir"};
-    $cfg{"system"}->{"page_suffix_regex"} = "\\.(?:md|markdown|html)\$" if !$cfg{"system"}->{"page_suffix_regex"};
-    $cfg{"system"}->{"template_dir"} = "_templates" if !$cfg{"system"}->{"template_dir"};
-    $cfg{"system"}->{"template_suffix"} = ".html" if !$cfg{"system"}->{"template_suffix"};
-    $cfg{"system"}->{"recent_posts_limit"} = 5 if !$cfg{"system"}->{"recent_posts_limit"};
+    $cfg{system}->{output_dir} = "site" if !$cfg{system}->{output_dir};
+    $cfg{system}->{raw_dir} = "_raw" if !$cfg{system}->{raw_dir};
+    $cfg{system}->{page_dir} = "_pages" if !$cfg{system}->{page_dir};
+    $cfg{system}->{page_suffix_regex} = "\\.(?:md|markdown|html)\$" if !$cfg{system}->{page_suffix_regex};
+    $cfg{system}->{template_dir} = "_templates" if !$cfg{system}->{template_dir};
+    $cfg{system}->{template_suffix} = ".html" if !$cfg{system}->{template_suffix};
+    $cfg{system}->{recent_posts_limit} = 5 if !$cfg{system}->{recent_posts_limit};
 
-    $cfg{"template"} = {} if !$cfg{"template"};
-    foreach my $k (keys %{$cfg{"template"}}) {
-        $cfg{"template"}->{$k} =~ s/[\t\s]+$//;  
+    $cfg{template} = {} if !$cfg{template};
+    foreach my $k (keys %{$cfg{template}}) {
+        $cfg{template}->{$k} =~ s/[\t\s]+$//;  
     }
 
-    $self->{"cfg"} = \%cfg;
+    $self->{cfg} = \%cfg;
 }
 
 =head2 _generatePages
@@ -142,21 +142,21 @@ templates on the pages, writes the final files to C<output_dir>.
 sub _generatePages {
     my ($self, $verbose) = @_;
 
-    my $cfg = $self->{"cfg"};
-    my $pageDir = $cfg->{"system"}->{"page_dir"};
+    my $cfg = $self->{cfg};
+    my $pageDir = $cfg->{system}->{page_dir};
     -d $pageDir or die "$pageDir does not exist.";
 
-    my $templateDir = $cfg->{"system"}->{"template_dir"};
+    my $templateDir = $cfg->{system}->{template_dir};
     -d $templateDir or die "$templateDir does not exist.";
 
     # ensures the output_dir exists
-    my $outputDir = $cfg->{"system"}->{"output_dir"};
+    my $outputDir = $cfg->{system}->{output_dir};
     $outputDir =~ s/^[ \t]+//;
     $outputDir =~ s/[ \t]+$//;
     make_path($outputDir, { mode => 0755 });
 
-    my $templateSuffix = $cfg->{"system"}->{"template_suffix"};
-    my $pageSuffixRegex = $cfg->{"system"}->{"page_suffix_regex"};
+    my $templateSuffix = $cfg->{system}->{template_suffix};
+    my $pageSuffixRegex = $cfg->{system}->{page_suffix_regex};
 
     my $tm = new Minerl::TemplateManager(template_dir => $templateDir, template_suffix => $templateSuffix);
     my $pm = new Minerl::PageManager( page_dir => $pageDir, page_suffix_regex => $pageSuffixRegex); 
@@ -180,8 +180,8 @@ sub _generatePages {
                 my $postsByTag = $pm->postsByTag($tag); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { __minerl_all_posts => $pm->posts()
-                    , __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , [$cfg->{template}, $page->headers, { __minerl_all_posts => $pm->posts()
+                    , __minerl_recent_posts => $pm->posts($cfg->{system}->{recent_posts_limit})
                     , __minerl_tagged_posts => $postsByTag , __minerl_cur_tag => $tag, "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
 
                 # Pages of 'taglist' type are restricted to be output to "$output_dir/tags/"
@@ -198,8 +198,8 @@ sub _generatePages {
                 my $postsByMonth = $pm->postsByMonth($month); 
 
                 my $html = $tm->applyTemplate($page->header("layout"), $page->content
-                    , [$cfg->{"template"}, $page->headers, { __minerl_all_posts => $pm->posts()
-                    , __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+                    , [$cfg->{template}, $page->headers, { __minerl_all_posts => $pm->posts()
+                    , __minerl_recent_posts => $pm->posts($cfg->{system}->{recent_posts_limit})
                     , __minerl_archived_posts => $postsByMonth, __minerl_cur_month => $month, "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
 
                 # Pages of 'archive' type are restricted to be output to "$output_dir/archives/"
@@ -209,8 +209,8 @@ sub _generatePages {
                 print "  generated archive page: $destFile\n" if $verbose;
             } 
         } else { # when the 'type' is not specified or is 'post', we treat it as normal page
-            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{"template"}, $page->headers, $page->ctxVars,
-                    , { __minerl_all_posts => $pm->posts(), __minerl_recent_posts => $pm->posts($cfg->{"system"}->{"recent_posts_limit"})
+            my $html = $tm->applyTemplate($page->header("layout"), $page->content, [$cfg->{template}, $page->headers, $page->ctxVars,
+                    , { __minerl_all_posts => $pm->posts(), __minerl_recent_posts => $pm->posts($cfg->{system}->{recent_posts_limit})
                     , "__minerl_all_tags" => $postTags, "__minerl_archived_months" => $postMonths } ]);
 
             # outputFilename is affected by the title or the slug of the page specified at the header section
@@ -250,13 +250,13 @@ Copies verbatim all files under C<raw_dir> to C<output_dir>.
 sub _copyRawResources {
     my ($self, $verbose) = @_;
 
-    my $cfg = $self->{"cfg"};
-    my $rawDir = $cfg->{"system"}->{"raw_dir"};
+    my $cfg = $self->{cfg};
+    my $rawDir = $cfg->{system}->{raw_dir};
     
     # if there's nothing to copy
     return if !-d $rawDir;
 
-    my $outputDir = $cfg->{"system"}->{"output_dir"};
+    my $outputDir = $cfg->{system}->{output_dir};
 
     find( { wanted => sub {
         if ( -d $_ ) {

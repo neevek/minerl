@@ -49,7 +49,7 @@ sub new {
 
         my $useStr = "use Text::MultiMarkdown;";
         eval($useStr);
-        $instance->{"available"} = !$@;
+        $instance->{available} = !$@;
 
         $markdownInstance = Text::MultiMarkdown->new(
             empty_element_suffix => '>',
@@ -58,7 +58,7 @@ sub new {
         ) if !$@;
     }
 
-    warn "Warning: Text::MultiMarkdown is not installed, Markdown text will not be parsed." if !$instance->{"available"};
+    warn "Warning: Text::MultiMarkdown is not installed, Markdown text will not be parsed." if !$instance->{available};
 
     return $instance;
 }

@@ -52,7 +52,7 @@ sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
-    my $filename = $self->{"filename"};
+    my $filename = $self->{filename};
 
     die "Must pass in filename of the page." if !$filename;
     Minerl::Util::parsePageFile($filename, $self);
@@ -62,12 +62,12 @@ sub new {
 
 sub header {
     my ($self, $key) = @_;
-    return $self->{"headers"}->{$key};
+    return $self->{headers}->{$key};
 }
 
 sub headers {
     my ($self) = @_;
-    return $self->{"headers"};
+    return $self->{headers};
 }
 
 =head2 content
@@ -80,9 +80,9 @@ as a restriction to limit the number of characters to te returned
 sub content {
     my ($self, $limit) = @_;
     if (!$limit) {
-        return \$self->{"content"};
+        return \$self->{content};
     } else {
-        my $content = \$self->{"content"};
+        my $content = \$self->{content};
         if (length $$content > $limit) {
             return \substr($$content, 0, $limit);
         }
@@ -99,7 +99,7 @@ available to the formatter.
 
 sub applyFormatter {
     my ($self, $formatter) = @_;
-    $self->{"content"} = $formatter->format( \$self->{"content"}, $self->headers() );
+    $self->{content} = $formatter->format( \$self->{content}, $self->headers() );
 }
 
 =head2 formats
@@ -124,8 +124,8 @@ C<__post_title>, C<__post_createdate> etc. these values are set in C<Minerl::Pag
 
 sub ctxVars {
     my ($self, $ctxVars) = @_;
-    $self->{"ctx_vars"} = $ctxVars if $ctxVars;
-    return $self->{"ctx_vars"};
+    $self->{ctx_vars} = $ctxVars if $ctxVars;
+    return $self->{ctx_vars};
 }
 
 sub ctxVar {
@@ -143,10 +143,10 @@ with this filename.
 sub outputFilename {
     my ($self, $designatedName) = @_;
 
-    my $outputFilename = $self->{"output_filename"};
+    my $outputFilename = $self->{output_filename};
     return $outputFilename if $outputFilename;
 
-    $outputFilename = $self->{"filename"};
+    $outputFilename = $self->{filename};
 
     # strip the first dirname, which is the root directory(raw_dir) of the page
     $outputFilename =~ s|^[^/]*/||g;    
@@ -167,7 +167,7 @@ sub outputFilename {
         return $slug if $slug;
 
         $outputFilename = lc $self->header("title");
-        die "Post does not contain a title header: " . $self->{"filename"} if !$outputFilename;
+        die "Post does not contain a title header: " . $self->{filename} if !$outputFilename;
 
         $outputFilename =~ s/[^a-z]/ /ig;         # replace all non-A-to-Z characters with whitespace
         $outputFilename =~ s/^[ \t]+//g;         # trim left
@@ -178,7 +178,7 @@ sub outputFilename {
         $outputFilename = "$dir/$outputFilename" if $dir ne ".";
     }
 
-    return $self->{"output_filename"} = $outputFilename;
+    return $self->{output_filename} = $outputFilename;
 }
 
 1;

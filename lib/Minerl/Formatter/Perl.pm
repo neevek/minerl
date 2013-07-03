@@ -49,7 +49,7 @@ sub new {
 
         my $useStr = "use Text::Template;";
         eval($useStr);
-        $instance->{"available"} = !$@;
+        $instance->{available} = !$@;
     }
 
     return $instance;
@@ -64,11 +64,11 @@ Note: the C<$content> arguement is a B<reference to string>
 sub format { 
     my ($self, $content, $data) = @_;
 
-    if ($self->{"available"}) {
+    if ($self->{available}) {
         my $txtTmpl = Text::Template->new(
             TYPE => "STRING",
             SOURCE => $$content,
-            DELIMITERS => [ "{{", "}}" ]
+            DELIMITERS => [ "{{, }}" ]
         ); 
 
         return $txtTmpl->fill_in( HASH => $data );

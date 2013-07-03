@@ -51,7 +51,7 @@ my $opts = $go->opts;
 $go->show_usage if !$command;
 
 if ($command eq 'generate') {
-    my $dirname = $opts->{"dirname"};
+    my $dirname = $opts->{dirname};
     !-d $dirname or print "$dirname already exists\n" and exit 0;
     make_path($dirname, { mode => 0755 });
       
@@ -69,23 +69,23 @@ if ($command eq 'generate') {
 my $minerl = new minerl( cfg_file => "minerl.cfg" ); 
 
 if ($command eq 'build') {
-    $minerl->build($opts->{"verbose"});
+    $minerl->build($opts->{verbose});
 } elsif ($command eq 'serve') {
     use HTTP::Server::Brick;
-    my $server = HTTP::Server::Brick->new( host => "localhost", port => $opts->{"port"});
-    $server->mount("/" => {"path" => $minerl->{"cfg"}->{"system"}->{"output_dir"}});
+    my $server = HTTP::Server::Brick->new( host => "localhost", port => $opts->{port});
+    $server->mount("/" => {"path" => $minerl->{cfg}->{system}->{output_dir}});
     $server->start()
 } elsif ($command eq 'createpost') {
     use POSIX qw(strftime);
     my $timestamp = time;
     my ($date) = strftime("%F %T", localtime $timestamp) =~ /([^ ]+) (.+)$/;
 
-    my $filename = $opts->{"filename"};
-    my $layout = $opts->{"layout"};
-    my $format = $opts->{"format"};
-    my $tags = $opts->{"tags"};
-    my $title = $opts->{"title"};
-    my $subdir = $opts->{"subdir"};
+    my $filename = $opts->{filename};
+    my $layout = $opts->{layout};
+    my $format = $opts->{format};
+    my $tags = $opts->{tags};
+    my $title = $opts->{title};
+    my $subdir = $opts->{subdir};
 
     my $headers = "---\n"
     . "title: $title\n"
@@ -96,7 +96,7 @@ if ($command eq 'build') {
     . "timestamp: $timestamp\n"
     . "---\n\n";
 
-    my $pageDir = $minerl->{"cfg"}->{"system"}->{"page_dir"} . "/$subdir/$date";
+    my $pageDir = $minerl->{cfg}->{system}->{page_dir} . "/$subdir/$date";
     $pageDir =~ s,-|/+,/,g;
     make_path($pageDir, { mode => 0755 });
 

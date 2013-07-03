@@ -41,8 +41,8 @@ sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
-    my $templateDir = $self->{"template_dir"};
-    my $templateSuffix = $self->{"template_suffix"};
+    my $templateDir = $self->{template_dir};
+    my $templateSuffix = $self->{template_suffix};
 
     $self->_initTemplates($templateDir, $templateSuffix);
    
@@ -55,10 +55,10 @@ sub _initTemplates {
     -d $templateDir or die "$templateDir: $!";
     my @files = glob($templateDir . "/*" . $templateSuffix);
 
-    my $tmplHashes = $self->{"templates"} = {};
+    my $tmplHashes = $self->{templates} = {};
 
     foreach my $filename (@files) {
-        #print "found template file: $filename\n" if $self->{"DEBUG"};
+        #print "found template file: $filename\n" if $self->{DEBUG};
 
         # basename without suffix
         my ($name) = basename($filename) =~ /([^.]+)/;
@@ -88,7 +88,7 @@ sub applyTemplate {
 sub _applyTemplateRecursively {
     my ($self, $tmplName, $content, $options) = @_;
 
-    my $tmpl = $self->{"templates"}->{$tmplName};
+    my $tmpl = $self->{templates}->{$tmplName};
     die "Template not found: $tmplName" if !$tmpl;
 
     $content = $tmpl->apply($content, $options);

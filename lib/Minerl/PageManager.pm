@@ -47,8 +47,8 @@ sub new {
     my ($class, @args) = @_;
     my $self = $class->SUPER::new(@args);
 
-    my $pageDir = $self->{"page_dir"};
-    my $pageSuffixRegex = $self->{"page_suffix_regex"};
+    my $pageDir = $self->{page_dir};
+    my $pageSuffixRegex = $self->{page_suffix_regex};
 
     $self->_initPages($pageDir, $pageSuffixRegex);
    
@@ -66,23 +66,23 @@ which will be made available to template files.
 sub _initPages {
     my ($self, $pageDir, $pageSuffixRegex) = @_;
 
-    my $pageArr = $self->{"pages"} = [];
+    my $pageArr = $self->{pages} = [];
 
     my @postArr;
 
     die "$pageDir: Directory does not exist." if !-d $pageDir;
 
-    my $taggedPosts = $self->{"tagged_posts"} = {};
-    my $archivedPosts = $self->{"archived_posts"} = {};
+    my $taggedPosts = $self->{tagged_posts} = {};
+    my $archivedPosts = $self->{archived_posts} = {};
 
     # this hash is used to sort the date 
-    my $archivedMonths = $self->{"archived_months"} = {};
+    my $archivedMonths = $self->{archived_months} = {};
 
     find( { wanted => sub {
         if ( -f $_ ) {
             return if $_ !~ /$pageSuffixRegex/;
 
-            #print "found page file: $pageDir/$filename\n" if $self->{"DEBUG"};
+            #print "found page file: $pageDir/$filename\n" if $self->{DEBUG};
 
             # basename without suffix
             my ($name) = basename($_) =~ /([^.]+)/;
@@ -117,7 +117,7 @@ sub _initPages {
                 }
 
                 # generates the create timestamp for the page if it is absent in the header 
-                $page->{"headers"}->{"timestamp"} = stat($_)->ctime if !$page->header("timestamp");
+                $page->{headers}->{timestamp} = stat($_)->ctime if !$page->header("timestamp");
 
                 # setup builtin variables
                 my $post= {
@@ -151,7 +151,7 @@ sub _initPages {
 
                 # sort in-pace the posts
                 while (my ($tag, $postArrRef) = each %$taggedPosts) {
-                    @$postArrRef = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @$postArrRef;                      
+                    @$postArrRef = sort { $b->{__post_timestamp} <=> $a->{__post_timestamp} } @$postArrRef;                      
                 }
 
                 # group the posts by month
@@ -167,15 +167,15 @@ sub _initPages {
 
                 # sort in-pace the posts
                 while (my ($month, $postArrRef) = each %$archivedPosts) {
-                    @$postArrRef = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @$postArrRef;                      
+                    @$postArrRef = sort { $b->{__post_timestamp} <=> $a->{__post_timestamp} } @$postArrRef;                      
                 }
             }
         }
     }, no_chdir => 1 }, ($pageDir) ); 
 
     # sort the posts by createtime
-    @postArr = sort { $b->{"__post_timestamp"} <=> $a->{"__post_timestamp"} } @postArr;
-    $self->{"posts"} = \@postArr;
+    @postArr = sort { $b->{__post_timestamp} <=> $a->{__post_timestamp} } @postArr;
+    $self->{posts} = \@postArr;
 }
 
 =head2 _obtainFormatter
@@ -186,10 +186,10 @@ Obtains a formatter with a name
 
 sub _obtainFormatter {
     my ($self, $name) = @_;
-    my $formatterHash = $self->{"formatters"};
+    my $formatterHash = $self->{formatters};
     if (!$formatterHash) {
-        $formatterHash->{"markdown"} = new Minerl::Formatter::Markdown();
-        $formatterHash->{"perl"} = new Minerl::Formatter::Perl();
+        $formatterHash->{markdown} = new Minerl::Formatter::Markdown();
+        $formatterHash->{perl} = new Minerl::Formatter::Perl();
     }
 
     if (defined $formatterHash->{$name}) {
@@ -207,7 +207,7 @@ Gets all pages of any type(specified in the header section of the page)
 
 sub pages {
     my ($self) = @_;
-    return $self->{"pages"};
+    return $self->{pages};
 }
 
 =head2 posts
@@ -221,9 +221,9 @@ will be made available to template files.
 sub posts {
     my ($self, $limit) = @_;
     if (!$limit) {
-        return $self->{"posts"};
+        return $self->{posts};
     } else {
-        my $posts = $self->{"posts"}; 
+        my $posts = $self->{posts}; 
         if (scalar @$posts > $limit) {
             my @slice = @$posts[0..$limit-1]; 
             return \@slice;
@@ -241,7 +241,7 @@ variables of the page
 
 sub tags {
     my ($self) = @_;
-    my $taggedPosts = $self->{"tagged_posts"};
+    my $taggedPosts = $self->{tagged_posts};
     my @keys = keys %$taggedPosts if $taggedPosts;
     return \@keys;
 }
@@ -254,7 +254,7 @@ Gets all posts of the specified tag
 
 sub postsByTag {
     my ($self, $tag) = @_;
-    my $taggedPosts = $self->{"tagged_posts"};
+    my $taggedPosts = $self->{tagged_posts};
     return $taggedPosts ? $taggedPosts->{$tag} : undef;
 }
 
@@ -266,7 +266,7 @@ Gets all tags of the posts
 
 sub postTags {
     my ($self) = @_;
-    my $taggedPosts = $self->{"tagged_posts"};
+    my $taggedPosts = $self->{tagged_posts};
 
     my @postTags;
     while (my ($tag, $posts) = each %$taggedPosts) {
@@ -274,7 +274,7 @@ sub postTags {
         push @postTags, { __minerl_tag => $tag, __minerl_post_count => $count };    
     }
 
-    @postTags = sort { $a->{"__minerl_tag"} cmp $b->{"__minerl_tag"} } @postTags;
+    @postTags = sort { $a->{__minerl_tag} cmp $b->{__minerl_tag} } @postTags;
 
     return \@postTags;
 }
@@ -287,7 +287,7 @@ months during which some posts were created
 
 sub months {
     my ($self) = @_;
-    my $archivedPosts = $self->{"archived_posts"};
+    my $archivedPosts = $self->{archived_posts};
     my @keys = keys %$archivedPosts if $archivedPosts;
     return \@keys;
 }
@@ -301,7 +301,7 @@ sub months {
 
 sub monthLink {
     my ($self, $month) = @_;
-    return $self->{"archived_months"}->{$month};
+    return $self->{archived_months}->{$month};
 }
 
 =head2 postsByMonth
@@ -312,7 +312,7 @@ Gets all posts created on the specified month
 
 sub postsByMonth {
     my ($self, $month) = @_;
-    my $archivedPosts = $self->{"archived_posts"};
+    my $archivedPosts = $self->{archived_posts};
     return $archivedPosts ? $archivedPosts->{$month} : undef;
 }
 
@@ -324,9 +324,9 @@ months during which some posts were created
 
 sub postMonths {
     my ($self) = @_;
-    my $archivedPosts = $self->{"archived_posts"};
+    my $archivedPosts = $self->{archived_posts};
 
-    my $archivedMonths = $self->{"archived_months"};
+    my $archivedMonths = $self->{archived_months};
 
     my @months;
     while (my ($month, $posts) = each %$archivedPosts) {
@@ -335,7 +335,7 @@ sub postMonths {
         push @months, { __minerl_month_display => $month, __minerl_month_link => $archivedMonths->{$month},  __minerl_post_count => $count };    
     }
 
-    @months = sort { $a->{"__minerl_month_link"} cmp $b->{"__minerl_month_link"} } @months;
+    @months = sort { $a->{__minerl_month_link} cmp $b->{__minerl_month_link} } @months;
 
     return \@months;
 }

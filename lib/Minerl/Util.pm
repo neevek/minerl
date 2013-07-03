@@ -83,13 +83,13 @@ sub parsePageFile {
             # strip trailing white spaces
             $line =~ s/[ \t\n]+$//g;
             my ($key, $value) = $line =~ '^([^:]+):[ \t]*(.*)$';
-            $hash->{"headers"}->{$key} = $value;
+            $hash->{headers}->{$key} = $value;
         } elsif ($state == PAGE_READ_CONTENT) {
             $content .= $line; 
         }
     } 
 
-    $hash->{"content"} = $content;
+    $hash->{content} = $content;
 
     die "$filename: Header section is not closed." if $state == PAGE_READ_HEADER;
     close(FILE);
