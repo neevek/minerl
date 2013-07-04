@@ -116,8 +116,14 @@ sub _initPages {
                     }
                 }
 
+                my $excerpt = ${$page->content(300)};
+                $excerpt =~ s/<[^>]+>//g;
+                $excerpt =~ s/<.*//g;
+
                 # generates the create timestamp for the page if it is absent in the header 
                 $page->{headers}->{timestamp} = stat($_)->ctime if !$page->header("timestamp");
+
+
 
                 # setup builtin variables
                 my $post= {
@@ -128,7 +134,7 @@ sub _initPages {
                     __post_createtime => POSIX::strftime("%I:%M %p", localtime($page->header("timestamp"))),
                     __post_tags => \@postTags,
                     __post_content => ${$page->content()},
-                    __post_excerpt => ${$page->content(300)},
+                    __post_excerpt => $excerpt,
                 };
 
                 # save these builtin variables in the context of the page
