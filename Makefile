@@ -4,6 +4,7 @@ INSTALLBIN = /usr/local/bin
 TO_INST_PM = lib/Minerl/BaseObject.pm \
 	lib/Minerl/Formatter/Markdown.pm \
 	lib/Minerl/Formatter/Perl.pm \
+	lib/Minerl/Formatter/Textile.pm \
 	lib/Minerl/Page.pm \
 	lib/Minerl/PageManager.pm \
 	lib/Minerl/Template.pm \

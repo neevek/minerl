@@ -26,7 +26,7 @@ my $go = Getopt::Compact::WithCmd->new(
        "createpost" => {
             options        => [[[qw(f filename)], qq(File name of the page), "=s", undef, { required => 1 }],
                                [[qw(l layout)], qq(Layout on which the newly created page is to be applied), "=s", undef, { required => 1 }],
-                               [[qw(m format)], qq(Format of the page, currently supports 'html, markdown, perl'), ":s", undef, { default => "html" }],
+                               [[qw(m format)], qq(Format of the page, currently supports 'html, markdown, textile, perl'), ":s", undef, { default => "html" }],
                                [[qw(g tags)], qq(Tags for the post, separated by commas), ":s", undef, { default => "uncategorized" }],
                                [[qw(t title)], qq(Title of the post), ":s", undef, { default => "untitled" }],
                                [[qw(d subdir)], qq(The subdir to put the newly created post), ":s", undef, { default => "" }],
@@ -140,7 +140,7 @@ page_dir = _pages
 
 # files that match 'page_suffix_regex' will be treated as 
 # pages and will be processed by minerl to generate final HTML files
-page_suffix_regex = \.(?:md|markdown|html)\$
+page_suffix_regex = \.(?:md|markdown|textile|html)\$
 
 # all generated files and resource files will be coplied to this directory
 output_dir = site
@@ -158,8 +158,8 @@ recent_posts_limit = 5
 # files, namely, properties under [template] section can be referenced in template
 # files
 [template]
-author = neevek
-email = i at neevek.net
+# author = neevek
+# email = i at neevek.net
 CONFIG
 # END CONFIG
 

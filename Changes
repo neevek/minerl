@@ -1,5 +1,6 @@
 Revision history for minerl
 
 0.01    2013-06-26/11:20
-        First version, released on an unsuspecting world.
-
+        First version, released on github.
+0.02    2013-07-30/01:25
+        Added support for textile in this release.

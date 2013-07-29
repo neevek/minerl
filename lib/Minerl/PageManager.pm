@@ -196,6 +196,7 @@ sub _obtainFormatter {
     if (!$formatterHash) {
         $formatterHash->{markdown} = new Minerl::Formatter::Markdown();
         $formatterHash->{perl} = new Minerl::Formatter::Perl();
+        $formatterHash->{textile} = new Minerl::Formatter::Textile();
     }
 
     if (defined $formatterHash->{$name}) {
