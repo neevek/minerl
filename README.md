@@ -118,18 +118,18 @@ Builtin variables
 
 **Minerl** offers quite a few builtin variables that can be used to generate index pages for tags and archives. Builtin variables can be referenced in templates with [HTML::Template](http://search.cpan.org/~wonko/HTML-Template-2.94/lib/HTML/Template.pm) syntax.
 
-**Minerl** offers the following variables:
+**Minerl** offers the following builtin variables:
 
 - `__minerl_all_posts`          - ARRAY, used in LOOP, available in all templates
 - `__minerl_recent_posts`       - ARRAY, used in LOOP, available in all templates
 - `__minerl_archived_months`    - ARRAY, used in LOOP, available in all templates
-- `__minerl_archived_posts`     - ARRAY, used in LOOP, available in templates applied on pages of type `archive` 
-- `__minerl_cur_month`          - string SCALAR, available in templates applied on pages of type `archive` 
+- `__minerl_archived_posts`     - ARRAY, used in LOOP, available in templates that are designed to be applied on pages of type `archive` 
+- `__minerl_cur_month`          - string SCALAR, available in templates that are designed to be applied on pages of type `archive` 
 - `__minerl_all_tags`           - ARRAY, used in LOOP, available in all templates
-- `__minerl_tagged_posts`       - ARRAY, used in LOOP, available in templates applied on pages of type `taglist` 
-- `__minerl_cur_tag`            - string SCALAR, available in templates applied on pages of type `taglist` 
+- `__minerl_tagged_posts`       - ARRAY, used in LOOP, available in templates that are designed to be applied on pages of type `taglist` 
+- `__minerl_cur_tag`            - string SCALAR, available in templates that are designed to be applied on pages of type `taglist` 
 
-The following builtin variables(string SCALAR) are only available in templates applied on pages of type `post`:
+The following builtin variables(string SCALAR) are only available in templates that are designed to be applied on pages of type `post`:
 
 - `__post_timestamp`
 - `__post_title`
@@ -140,7 +140,7 @@ The following builtin variables(string SCALAR) are only available in templates a
 - `__post_content`
 - `__post_exerpt`
 
-Besides the above variables, all user defined variables in page headers are available to all templates. 
+Besides the above variables, all user defined variables in page headers are available in all templates. 
 
 ### Examples
 
