@@ -37,7 +37,7 @@ my $go = Getopt::Compact::WithCmd->new(
         },  
        "generate" => {
             options        => [[[qw(d dirname)], qq(The directory name to the site to be created), "=s", undef, { required => 1 }]],
-            args           => "<-n dirname>",
+            args           => "<-d dirname>",
             desc           => "- Creates a brand new Minerl site",
             other_usage    => "Example:\n\tminerl generate -d mysite"
         },  
