@@ -54,7 +54,7 @@ sub new {
 
     my $filename = $self->{filename};
 
-    die "Must pass in filename of the page." if !$filename;
+    $filename or die "Must pass in filename of the page.";
     Minerl::Util::parsePageFile($filename, $self);
    
     return $self;
@@ -167,7 +167,7 @@ sub outputFilename {
         return $slug if $slug;
 
         $outputFilename = lc $self->header("title");
-        die "Post does not contain a title header: " . $self->{filename} if !$outputFilename;
+        $outputFilename or die "Post does not contain a title header: " . $self->{filename};
 
         $outputFilename =~ s/[^a-z]/ /ig;         # replace all non-A-to-Z characters with whitespace
         $outputFilename =~ s/^[ \t]+//g;         # trim left

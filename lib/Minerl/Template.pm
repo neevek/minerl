@@ -45,9 +45,7 @@ sub apply {
 
     my $tmpl = $self->{template};   
 
-    if (!$tmpl) {
-        die "Template '" . $self->{name} . "' not prepared, call build() first.";
-    }
+    $tmpl or die "Template '" . $self->{name} . "' not prepared, call build() first.";
 
     $tmpl->clear_params();
 

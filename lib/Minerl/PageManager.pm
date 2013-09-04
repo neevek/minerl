@@ -70,7 +70,7 @@ sub _initPages {
 
     my @postArr;
 
-    die "$pageDir: Directory does not exist." if !-d $pageDir;
+    -d $pageDir or die "$pageDir: Directory does not exist.";
 
     my $taggedPosts = $self->{tagged_posts} = {};
     my $archivedPosts = $self->{archived_posts} = {};
@@ -88,7 +88,7 @@ sub _initPages {
             my ($name) = basename($_) =~ /([^.]+)/;
             my $page = new Minerl::Page( filename => $_, name => $name );
 
-            die "$_: 'layout' header is not specified." if !$page->header("layout");
+            $page->header("layout") or die "$_: 'layout' header is not specified.";
 
             # applies formatters on all pages
             my $formats = $page->formats();

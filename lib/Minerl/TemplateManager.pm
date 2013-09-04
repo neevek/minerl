@@ -89,7 +89,7 @@ sub _applyTemplateRecursively {
     my ($self, $tmplName, $content, $options) = @_;
 
     my $tmpl = $self->{templates}->{$tmplName};
-    die "Template not found: $tmplName" if !$tmpl;
+    $tmpl or die "Template not found: $tmplName";
 
     $content = $tmpl->apply($content, $options);
     my $baseTmplName = $tmpl->header("layout");
