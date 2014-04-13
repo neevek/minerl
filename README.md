@@ -138,7 +138,7 @@ The following builtin variables(string SCALAR) are only available in templates t
 - `__post_createtime`
 - `__post_tags`
 - `__post_content`
-- `__post_exerpt`
+- `__post_excerpt`
 
 Besides the above variables, all user defined variables in page headers are available in all templates. 
 
@@ -169,7 +169,7 @@ The following code uses the `__minerl_tagged_posts` variable to list all posts o
 Formats
 =======
 
-Currently **minerl** supports [markdown](http://search.cpan.org/~bobtfish/Text-MultiMarkdown-1.000034/lib/Text/MultiMarkdown.pm), [textile](http://search.cpan.org/~bchoate/Text-Textile-2.12/lib/Text/Textile.pm) and Perl script.
+Currently **minerl** supports [markdown](http://search.cpan.org/~bobtfish/Text-MultiMarkdown-1.000034/lib/Text/MultiMarkdown.pm), [textile](http://search.cpan.org/~bchoate/Text-Textile-2.12/lib/Text/Textile.pm) and Perl script, and of course, plain text/HTML.
 
 LICENSE AND COPYRIGHT
 =====================
