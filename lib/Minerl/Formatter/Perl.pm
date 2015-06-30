@@ -68,7 +68,7 @@ sub format {
         my $txtTmpl = Text::Template->new(
             TYPE => "STRING",
             SOURCE => $$content,
-            DELIMITERS => [ "{{, }}" ]
+            DELIMITERS => [ '{{', '}}' ]
         ); 
 
         return $txtTmpl->fill_in( HASH => $data );
