@@ -65,7 +65,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =cut
 
 package minerl;
-use encoding "utf-8";
 
 our $VERSION = '0.01';
 

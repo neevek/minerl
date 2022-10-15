@@ -18,10 +18,9 @@ Before installation, make sure you have installed all modules required by **mine
     Getopt::Compact::WithCmd
     HTTP::Server::Brick
 
-I recommend [cpanm](https://raw.github.com/miyagawa/cpanminus/master/cpanm) for installing modules.
+I recommend [cpanm](https://metacpan.org/dist/App-cpanminus/view/lib/App/cpanminus/fatscript.pm) for installing modules.
 
-    curl -o cpanm https://raw.github.com/miyagawa/cpanminus/master/cpanm
-    chmod +x cpanm
+    curl -L https://cpanmin.us | perl - --sudo App::cpanminus
 
 After cpanm is installed, use the following command to install all required modules, note you may need root permission if the modules are to be installed in system directory:
 
